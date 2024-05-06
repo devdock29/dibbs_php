@@ -1,0 +1,154 @@
+{% extends '/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="d-sm-flex d-block justify-content-between align-items-center mb-4">
+            <h2 class="text-black font-w600 mb-sm-0 mb-2">Products</h2>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% include '/layout/success-error.html' %}
+                <div class="d-sm-flex  d-block align-items-center mb-4">
+                    <div class="mr-auto">
+                        <h4 class="fs-20 text-black">Products <small>({{totalRecords|number_format}})</small></h4>
+                        <span class="fs-12">All of Your Products List</span>
+                    </div>
+                    <form action="" method="post">
+                        <div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="btn btn-light btn-rounded" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <i class="las la-search scale5 mr-3"></i>
+                                <input type="text" class="form-control-sm" placeholder="Search" value="{{search.keyword}}" name="keyword" id="keyword">
+                            </div>
+                        </div>
+                        <div class="custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="">
+                                <input type="submit" class="btn btn-primary btn-sm btn-rounded" placeholder="Search" value="Search" name="submit" id="submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body payment-bx tab-content p-0">
+                        <div class="tab-pane active show fade" id="monthly" role="tabpanel">
+                            <div id="accordion-one" class="accordion accordion-primary">
+                            <table class="table display mb-4 dataTablesCard" id="example5">
+                                <thead class="accordion__item">
+                                    <tr class="accordion__header collapsed rounded" data-toggle="collapse" data-target="#default_collapse0">
+                                    <th>Product ID</th>
+                                    <th>Image</th>
+                                    <th>Product Info</th>
+                                    <th>Description</th>
+                                    <th>Added On</th>
+                                    <th>Product Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr class="accordion__header collapsed rounded" data-toggle="collapse" data-target="#default_collapse{{loop.index}}">
+                                    <td><span class="text-black font-w500">#&nbsp;{{product.product_id}}</span></td>
+                                    <td>
+                                        <div class="profile-image mr-4">
+                                            {% if product.image != '' %}
+                                            <img src="{{constant('SITE_URL')}}{{product.image}}" alt="{{product.product_name}}" class="rounded-circle" width="63" height="63">
+                                            {% else %}
+                                            <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{product.product_name}}" class="rounded-circle" width="63">
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <h6 class="fs-16 font-w700 mb-0"><a class="text-black" href="javascript:void(0)">{{product.product_name}}</a></h6>
+                                            <span class="fs-14">{{product.variations}} Variations</span>
+                                            <span class="fs-14">From {{product.storeData.store_name}}</span>
+                                        </div>
+                                    </td>
+                                    <!--<td>
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <h6 class="fs-16 text-black font-w600 mb-0 text-nowrap">{{order.cust_info.first_name }}&nbsp;{{order.cust_info.last_name }}</h6>
+                                                <span class="fs-14">{{order.cust_info.email }}</span>
+                                            </div>
+                                        </div>
+                                    </td>-->
+                                    <td><span class="text-black">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description }}</span></td>
+                                    <td><span class="text-black">{{product.added_on|date("d M, Y H:i:s")}}</span></td>
+                                    <td><a href="javascript:void(0)" class="label label-xs {% if product.status == 'pending' %}label-warning {% else %}label-success{% endif %}">{{product.status|capitalize}}</a></td>
+                                    <td>
+                                        <div class="dropdown mb-auto">
+                                            <div class="btn-link" role="button" data-toggle="dropdown" aria-expanded="false">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10 11.9999C10 13.1045 10.8954 13.9999 12 13.9999C13.1046 13.9999 14 13.1045 14 11.9999C14 10.8954 13.1046 9.99994 12 9.99994C10.8954 9.99994 10 10.8954 10 11.9999Z" fill="black"></path>
+                                                <path d="M10 4.00006C10 5.10463 10.8954 6.00006 12 6.00006C13.1046 6.00006 14 5.10463 14 4.00006C14 2.89549 13.1046 2.00006 12 2.00006C10.8954 2.00006 10 2.89549 10 4.00006Z" fill="black"></path>
+                                                <path d="M10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20C14 18.8954 13.1046 18 12 18C10.8954 18 10 18.8954 10 20Z" fill="black"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" href="{{constant('SITE_URL')}}products/index/action/delete/id/{{product.product_id}}">Delete</a>
+                                                <a class="dropdown-item" href="{{constant('SITE_URL')}}products/addNew/id/{{product.product_id}}">Edit</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="default_collapse{{loop.index}}" class="collapse accordion__body" data-parent="#accordion-one">
+                                    <td colspan="15">
+                                    <table class="table display mb-4 dataTablesCard accordion__body--text" id="example4545">
+                                        <thead class="accordion__item">
+                                            <tr>
+                                                <th>Variant ID</th>
+                                                <th>Name</th>
+                                                <th>Image</th>
+                                                <th>Price</th>
+                                                <th>Discount</th>
+                                                <th>Added On</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for var in product.varData %}
+                                            <tr>
+                                                <td><span class="text-black">#{{var.auto_id}}</span></td>
+                                                <td><span class="text-black">{{var.name}}</span></td>
+                                                <td>
+                                                    <span class="text-black">
+                                                    {% if var.image != '' %}
+                                                    <img src="{{constant('SITE_URL')}}{{var.image}}" alt="{{var.name}}" class="rounded-circle1" width="40" height="40">
+                                                    {% else %}
+                                                    <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{var.name}}" class="rounded-circle1" width="40">
+                                                    {% endif %}
+                                                    </span>
+                                                </td>
+                                                <td><span class="text-black">$&nbsp;{{var.price|number_format(2)}}</span></td>
+                                                <td><span class="text-black">$&nbsp;{{var.discount|number_format(2)}}</span></td>
+                                                <td><span class="text-black">{{var.added_on|date("M d, Y")}}</span></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                        </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive table-hover fs-14">
+                <div id="example5_wrapper" class="dataTables_wrapper no-footer">
+                    <div class="row ml-0 mr-0">
+                        <div class="col-lg-6 text-left">
+                            {{pagenationInfo|raw}}
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            {{pagenation|raw}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

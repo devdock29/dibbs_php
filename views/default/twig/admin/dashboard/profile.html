@@ -1,0 +1,120 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>My Profile</h4>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{constant('SITE_URL')}}dashboard/index">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Update Profile</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% include '/layout/success-error.html' %}
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" enctype="multipart/form-data" method="post" action="">
+                            <input type="hidden" name="user_id" value="{{profile.user_id}}" />
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-8 order-lg-1">
+                                    <h4 class="mb-3">Personal Information</h4>
+                                    <div class="mb-3">
+                                        <label for="user_name">Full Name<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="user_name" id="user_name" placeholder="Full Name" value="{{profile.user_name}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email">Email<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="{{profile.email}}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="coupen_code">Coupen Code<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="coupen_code" id="coupen_code" placeholder="coupen code" value="{{profile.coupen_code}}" maxlength="10">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="coupen_amount">Coupen Amount (%)<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="coupen_amount" id="coupen_amount" placeholder="coupen amount" value="{{profile.coupen_amount}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="support_email">Support Email On<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="email" class="form-control" name="support_email" id="support_email" placeholder="Support Email" value="{{profile.support_email}}" maxlength="200">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="refferal_credits">Referral Credits<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="refferal_credits" id="refferal_credits" placeholder="Refferal Credits" value="{{profile.refferal_credits}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="signup_credits">SignUp Credits<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="signup_credits" id="signup_credits" placeholder="Signup Credits" value="{{profile.signup_credits}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="signup_credits_expiry">SignUp Credits Expiry<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" name="signup_credits_expiry" id="signup_credits_expiry" placeholder="Signup Credits" value="{{profile.signup_credits_expiry}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="coupen_amount">Product Admin Share (%)<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="product_admin_share" id="product_admin_share" placeholder="Admin Share in Product" value="{{profile.product_admin_share}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="send_signup_email">Send SignUp Email<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select class="form-control" name="send_signup_email" id="send_signup_email" >
+                                                <option value="Y" {% if profile.send_signup_email == 'Y' %}selected{% endif %}>Yes</option>
+                                                <option value="N" {% if profile.send_signup_email == 'N' %}selected{% endif %}>No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="image_profile">Profile Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="image_profile" id="image_profile" class="custom-file-input" onchange="document.getElementById('pre_image_profile').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_image_profile').style.display = 'block';" accept="image/*">
+                                                <label class="custom-file-label">Choose Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="pre_img_div_image_profile" style="display: {% if profile.image == '' %}none{% endif %}; ">
+                                        <div class="input-group">
+                                            <img src="{{constant('SITE_URL')}}{{profile.image}}" height="100" width="100" id="pre_image_profile">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password">New Password</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="password" id="password" placeholder="Change Password" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 order-lg-1">
+                                    <button class="btn btn-primary btn-block" type="submit">Update Profile</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

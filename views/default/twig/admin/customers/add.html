@@ -1,0 +1,42 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>Customers</h4>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 order-lg-1"></div>
+                            <div class="col-lg-6 order-lg-1">
+                                <h4 class="mb-3">Update Customers</h4>
+                                <form method="post" action="" class="needs-validation">
+                                    <input type="hidden" name="auto_id" value="{{caption.customer_id}}" />
+                                    <div class="mb-3">
+                                        <label for="cust_name">User</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="cust_name" id="cust_name" readonly value="{{caption.first_name}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="credits">Referral Credits</label>
+                                        <div class="input-group">
+                                            <input type="numbers" class="form-control" name="credits" id="credits" placeholder="Referral Credits" required="" value="{{caption.refferal_credits}}">
+                                        </div>
+                                    </div>
+                                    
+                                    <hr class="mb-4">
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Update Referral Credits</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

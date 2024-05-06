@@ -1,0 +1,135 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="d-sm-flex d-block justify-content-between align-items-center mb-4">
+            <h2 class="text-black font-w600 mb-sm-0 mb-2">Products</h2>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% include '/layout/success-error.html' %}
+                <div class="d-sm-flex  d-block align-items-center mb-4">
+                    <div class="mr-auto">
+                        <h4 class="fs-20 text-black">Products <small>({{totalRecords|number_format}})</small></h4>
+                        <span class="fs-12">All of Your Products List</span>
+                    </div>
+                    <form action="" method="post">
+                        <div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="btn btn-light btn-rounded" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <i class="las la-search scale5 mr-3"></i>
+                                <input type="text" class="form-control-sm" placeholder="Search" value="{{search.keyword}}" name="keyword" id="keyword">
+                            </div>
+                        </div>
+                        <div class="custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="">
+                                <input type="submit" class="btn btn-primary btn-sm btn-rounded" placeholder="Search" value="Search" name="submit" id="submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body payment-bx tab-content p-0">
+                        <div class="tab-pane active show fade" id="monthly" role="tabpanel">
+                            <div id="accordion-one" class="accordion accordion-primary">
+                                {% for product in products %}
+                                <div class="accordion__item border-bottom mb-0">
+                                    <div class="d-flex flex-wrap align-items-center accordion__header collapsed rounded" data-toggle="collapse" data-target="#default_collapse{{loop.index}}">
+                                        <div class="mb-lg-0 mb-3 d-flex align-items-center">
+                                            <div class="profile-image mr-4">
+                                                {% if product.image != '' %}
+                                                <img src="{{constant('SITE_URL')}}{{product.image}}" alt="{{product.product_name}}" class="rounded-circle" width="63" height="63">
+                                                {% else %}
+                                                <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{product.product_name}}" class="rounded-circle" width="63">
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <h6 class="fs-16 font-w700 mb-0"><a class="text-black" href="javascript:void(0)">{{product.product_name}}</a></h6>
+                                                <span class="fs-14">{{product.variations}} Variations</span>
+                                                <span class="fs-14">From {{product.storeData.store_name}}</span>
+                                            </div>
+                                        </div>
+                                        <span class="mb-lg-0 mb-3 text-black px-2">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description }}</span>
+                                        <span class="mb-lg-0 mb-3 text-black px-2">$&nbsp;{{product.price|number_format}}</span>
+                                        <span class="mb-lg-0 mb-3 text-black px-2">$&nbsp;{{product.discount|number_format}}</span>
+                                        <span class="mb-lg-0 mb-3 text-black font-w600 px-2">{{product.added_on|date("d M, Y H:i:s")}}</span>
+                                        <a class="mb-lg-0 mb-3 btn btn-outline-success btn-md btn-rounded mx-2" href="javascript:void(0)">{{product.status}}</a>
+                                        <div class="mb-lg-0 mb-3 dropdown">
+                                            <div class="btn btn-info btn-md btn-rounded" role="button" data-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" href="{{constant('ADMIN_URL')}}products/index/action/delete/id/{{product.product_id}}">Delete</a>
+                                                <a class="dropdown-item" href="{{constant('ADMIN_URL')}}products/addNew/id/{{product.product_id}}">Edit</a>
+                                            </div>
+                                        </div>
+                                        <span class="accordion__header--indicator"></span>
+                                    </div>
+                                    <div id="default_collapse{{loop.index}}" class="collapse accordion__body" data-parent="#accordion-one">
+                                        {% for var in product.varData %}
+                                        <div class="d-flex flex-wrap align-items-center accordion__body--text p-0">
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Variation ID</p>
+                                                <span class="text-black font-w500">#{{var.auto_id}}</span>
+                                            </div>
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Name</p>
+                                                <span class="text-black font-w500">{{var.name}}</span>
+                                            </div>
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Image</p>
+                                                <span class="text-black font-w500">
+                                                    {% if var.image != '' %}
+                                                    <img src="{{constant('SITE_URL')}}{{var.image}}" alt="{{var.name}}" class="rounded-circle1" width="40" height="40">
+                                                    {% else %}
+                                                    <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{var.name}}" class="rounded-circle1" width="40">
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Price</p>
+                                                <span class="text-black font-w500">$&nbsp;{{var.price|number_format}}</span>
+                                            </div>
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Discount</p>
+                                                <span class="text-black font-w500">$&nbsp;{{var.discount|number_format}}</span>
+                                            </div>
+                                            <div class="mr-3 mb-3">
+                                                <p class="fs-12 mb-2">Added On</p>
+                                                <span class="text-black font-w500">{{var.added_on|date("M d, Y")}}</span>
+                                            </div>
+                                            <div class="d-flex p-3 rounded bgl-dark align-items-center mb-3">
+                                                <svg class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 1C9.82441 1 7.69767 1.64514 5.88873 2.85384C4.07979 4.06253 2.66989 5.7805 1.83733 7.79049C1.00477 9.80047 0.786929 12.0122 1.21137 14.146C1.6358 16.2798 2.68345 18.2398 4.22183 19.7782C5.76021 21.3166 7.72022 22.3642 9.85401 22.7887C11.9878 23.2131 14.1995 22.9953 16.2095 22.1627C18.2195 21.3301 19.9375 19.9202 21.1462 18.1113C22.3549 16.3023 23 14.1756 23 12C22.9966 9.08368 21.8365 6.28778 19.7744 4.22563C17.7122 2.16347 14.9163 1.00344 12 1ZM12 21C10.22 21 8.47992 20.4722 6.99987 19.4832C5.51983 18.4943 4.36628 17.0887 3.68509 15.4442C3.0039 13.7996 2.82567 11.99 3.17294 10.2442C3.5202 8.49836 4.37737 6.89471 5.63604 5.63604C6.89472 4.37737 8.49836 3.5202 10.2442 3.17293C11.99 2.82567 13.7996 3.0039 15.4442 3.68509C17.0887 4.36627 18.4943 5.51983 19.4832 6.99987C20.4722 8.47991 21 10.22 21 12C20.9971 14.3861 20.0479 16.6736 18.3608 18.3608C16.6736 20.048 14.3861 20.9971 12 21Z" fill="#A4A4A4"/>
+                                                <path d="M12 9C11.7348 9 11.4804 9.10536 11.2929 9.29289C11.1054 9.48043 11 9.73478 11 10V17C11 17.2652 11.1054 17.5196 11.2929 17.7071C11.4804 17.8946 11.7348 18 12 18C12.2652 18 12.5196 17.8946 12.7071 17.7071C12.8947 17.5196 13 17.2652 13 17V10C13 9.73478 12.8947 9.48043 12.7071 9.29289C12.5196 9.10536 12.2652 9 12 9Z" fill="#A4A4A4"/>
+                                                <path d="M12 8C12.5523 8 13 7.55228 13 7C13 6.44771 12.5523 6 12 6C11.4477 6 11 6.44771 11 7C11 7.55228 11.4477 8 12 8Z" fill="#A4A4A4"/>
+                                                </svg>
+                                                <p class="mb-0 fs-14"> </p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive table-hover fs-14">
+                <div id="example5_wrapper" class="dataTables_wrapper no-footer">
+                    <div class="row ml-0 mr-0">
+                        <div class="col-lg-6 text-left">
+                            {{pagenationInfo|raw}}
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            {{pagenation|raw}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

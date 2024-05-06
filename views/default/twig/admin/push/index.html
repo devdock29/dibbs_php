@@ -1,0 +1,104 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="d-sm-flex d-block justify-content-between align-items-center mb-4">
+            <h2 class="text-black font-w600 mb-sm-0 mb-2">Push Notification</h2>
+            <a class="btn btn-rounded btn-sm btn-primary" href="{{constant('ADMIN_URL')}}push/addNew">
+                <span class="btn-icon-left text-primary text-sm-left"><i class="fa fa-plus" aria-hidden="true"></i></span>New Push
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% if error is not empty %}
+                <div class="alert alert-danger solid alert-dismissible fade show">
+                    <svg viewBox="0 0 24 24" width="24 " height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    <strong>Error!</strong> {{error}}
+                    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span></button>
+                </div>
+                {% endif %}
+                {% if success is not empty %}
+                <div class="alert alert-success solid alert-dismissible fade show">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    <strong>Success!</strong> {{success}}
+                    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span></button>
+                </div>
+                {% endif %}
+                <!--<div class="d-sm-flex  d-block align-items-center mb-4">
+                    <div class="mr-auto">
+                        <h4 class="fs-20 text-black">Push</h4>
+                    </div>
+                    <form action="" method="post">
+                        <div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="btn btn-light btn-rounded" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <i class="las la-search scale5 mr-3"></i>
+                                <input type="text" class="form-control-sm" placeholder="Search" value="{{search.keyword}}" name="keyword" id="keyword">
+                            </div>
+                        </div>
+                        <div class="custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="">
+                                <input type="submit" class="btn btn-primary btn-rounded" placeholder="Search" value="Search" name="submit" id="submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>-->
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive table-hover fs-14">
+                    <div id="example5_wrapper" class="dataTables_wrapper no-footer">
+                        <table class="table display mb-4 dataTablesCard" id="example5">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Audiance</th>
+                                    <th>User</th>
+                                    <th>Heading</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Added On</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lang in push %}
+                                <tr>
+                                    <td><span class="text-black font-w600">{{lang.auto_id}}</span></td>
+                                    <td><span class="text-black">{{lang.audiance}}</span></td>
+                                    <td><span class="text-black">{{lang.customer_id}}</span></td>
+                                    <td><span class="text-black">{{lang.heading}}</span></td>
+                                    <td><span class="text-black">{{lang.message|length > 50 ? lang.message|slice(0, 80) ~ '...' : lang.message}}</span></td>
+                                    <td><span class="text-black">{{lang.status}}</span></td>
+                                    <td><span class="text-black">{{lang.added_on|date("d M, Y H:i:s")}}</span></td>
+                                    <td>
+                                        <div class="dropdown mb-auto">
+                                            <div class="btn-link" role="button" data-toggle="dropdown" aria-expanded="false">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10 11.9999C10 13.1045 10.8954 13.9999 12 13.9999C13.1046 13.9999 14 13.1045 14 11.9999C14 10.8954 13.1046 9.99994 12 9.99994C10.8954 9.99994 10 10.8954 10 11.9999Z" fill="black"></path>
+                                                <path d="M10 4.00006C10 5.10463 10.8954 6.00006 12 6.00006C13.1046 6.00006 14 5.10463 14 4.00006C14 2.89549 13.1046 2.00006 12 2.00006C10.8954 2.00006 10 2.89549 10 4.00006Z" fill="black"></path>
+                                                <path d="M10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20C14 18.8954 13.1046 18 12 18C10.8954 18 10 18.8954 10 20Z" fill="black"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" href="{{constant('ADMIN_URL')}}push/index/action/delete/id/{{lang.auto_id}}">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row ml-0 mr-0">
+                            <div class="col-lg-6 text-left">
+                                {{pagenationInfo|raw}}
+                            </div>
+                            <div class="col-lg-6 text-right">
+                                {{pagenation|raw}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="form-head mb-4">
+            <h2 class="text-black font-w600 mb-0">Discount Coupons</h2>
+            <a class="btn btn-rounded btn-sm btn-primary" href="{{constant('ADMIN_URL')}}coupens/add">
+                <span class="btn-icon-left text-primary text-sm-left"><i class="fa fa-plus" aria-hidden="true"></i></span>New Coupon
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="d-sm-flex  d-block align-items-center mb-4">
+                    <div class="mr-auto">
+                        <h4 class="fs-20 text-black">Coupons <small>({{totalRecords}})</small></h4>
+                        <span class="fs-12">All Discount coupons for customers</span>
+                    </div>
+                    <form action="" method="post">
+                        <!--<div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="dropdown bootstrap-select default-select dropup">
+                                <select name="statis" class="default-select" tabindex="-98">
+                                    <option selected="">All</option>
+                                    <option value="active">Active</option>
+                                    <option value="deleted">Deleted</option>
+                                </select>
+                            </div>
+                        </div>-->
+                        <div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
+                            <div class="btn btn-light btn-rounded" role="button" data-toggle="dropdown" aria-expanded="false">
+                                <i class="las la-calendar-alt scale5 mr-3"></i>
+                                <input type="text" class="form-control-sm" placeholder="Search" value="{{search.keyword}}" name="keyword" id="keyword">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive table-hover fs-14">
+                    <table class="table display mb-4 dataTablesCard " id="example5">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Coupon Code</th>
+                                <th>Coupon Discount</th>
+                                <th>Coupon Email</th>
+                                <th>Added On</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for coupen in coupens %}
+                            <tr>
+                                <td><span class="text-black font-w500">{{coupen.auto_id}}</span></td>
+                                <td><span class="text-black">{{coupen.code}}</span></td>
+                                <td><span class="text-black">{{coupen.discount}} %</span></td>
+                                <td><span class="text-black">{{coupen.email}}</span></td>
+                                <td><span class="text-black">{{coupen.added_on|date("d M, Y H:i:s")}}</span></td>
+                                <td><a href="javascript:void(0)" class="btn btn-success btn-sm btn-rounded">{{coupen.status}}</a></td>
+                                <td>
+                                    <div class="dropdown mb-auto">
+                                        <div class="btn-link" role="button" data-toggle="dropdown" aria-expanded="false">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 11.9999C10 13.1045 10.8954 13.9999 12 13.9999C13.1046 13.9999 14 13.1045 14 11.9999C14 10.8954 13.1046 9.99994 12 9.99994C10.8954 9.99994 10 10.8954 10 11.9999Z" fill="black"></path>
+                                            <path d="M10 4.00006C10 5.10463 10.8954 6.00006 12 6.00006C13.1046 6.00006 14 5.10463 14 4.00006C14 2.89549 13.1046 2.00006 12 2.00006C10.8954 2.00006 10 2.89549 10 4.00006Z" fill="black"></path>
+                                            <path d="M10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20C14 18.8954 13.1046 18 12 18C10.8954 18 10 18.8954 10 20Z" fill="black"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            {% if coupen.status == 'active' %}
+                                            <a class="dropdown-item" href="{{constant('ADMIN_URL')}}coupens/index/action/deleted/id/{{coupen.auto_id}}">Delete</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-lg-6 text-left">
+                            {{pagenationInfo|raw}}
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            {{pagenation|raw}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

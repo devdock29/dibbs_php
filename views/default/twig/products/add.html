@@ -1,0 +1,358 @@
+{% extends '/layout/main.html' %}
+{% block main %}
+<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/pickadate/themes/default.css">
+<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/pickadate/themes/default.date.css">
+<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/clockpicker/css/bootstrap-clockpicker.min.css">
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/uploader/image-uploader.css">
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>Products</h4>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{constant('SITE_URL')}}products/index">All Products</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Add/Update Product</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% if can_add_product == 'N' %}
+                    <div class="alert alert-danger solid alert-dismissible fade show">
+                        <svg viewBox="0 0 24 24" width="24 " height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                        <strong>Error!</strong> {{error_message|raw}}
+                        <br ><br />
+                        <a class="btn btn-primary" href="{{constant('SITE_URL')}}dashboard/profile">Update Profile Now</a>
+                    </div>
+                {% else %}
+                {% include '/layout/success-error.html' %}
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" enctype="multipart/form-data" method="post" action="">
+                            <input type="hidden" name="product_id" value="{{product.product_id}}" />
+                            <div class="row">
+                                <div class="col-lg-4 order-lg-2 mb-4">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Products Variations</span>
+                                        <span class="badge badge-primary badge-pill">{{product.variations}}</span>
+                                        <input type="hidden" name="variations" id="variations" value="{{product.variations+1}}" />
+                                    </h4>
+                                    <div id="pro_var">
+                                        {% for var in product.varData %}
+                                        <input type="hidden" name="auto_id[]" value="{{var.auto_id}}" />
+                                        <div id="var_section_{{loop.index}}" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;">
+                                            <button class="btn btn-sm btn-danger" type="button" onclick="delVariant({{loop.index}});">Delete This Variant</button>
+                                            <div class="mb-3">
+                                                <label for="product_name_{{loop.index}}">Variant Name <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control input" name="var_name[]" id="product_name_{{loop.index}}" placeholder="Variation Name" value="{{var.name}}" required="">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="price_{{loop.index}}">Product Price <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="text" min="0" step="0.01" class="form-control input-rounded" name="price[]" id="price_{{loop.index}}" placeholder="Product Price" value="{{var.price|round(2, 'floor')}}" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="discount_1">Discount</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="text" min="0" step="0.01" class="form-control input-rounded" name="discount[]" id="discount_{{loop.index}}" placeholder="Discount" value="{{var.discount|round(2, 'floor')}}" >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="image_{{loop.index}}">Image</label>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image[]" id="image_{{loop.index}}" class="custom-file-input" onchange="document.getElementById('pre_image_{{loop.index}}').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_{{loop.index}}').style.display = 'block';" accept="image/*">
+                                                        <label class="custom-file-label">Choose Image</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3" id="pre_img_div_{{loop.index}}" style="display: {% if var.image == '' %}none{% endif %}; ">
+                                                <div class="input-group">
+                                                    <img src="{{constant('SITE_URL')}}{{var.image}}" height="100" width="100" id="pre_image_{{loop.index}}">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tags_{{loop.index}}">Product Tags <small>(Comma Separated)</small></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="tags[]" id="tags_{{loop.index}}" placeholder="Variant Tags" value="{{var.tags}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        <div style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;">
+                                            <div class="mb-3">
+                                                <label for="product_name_{{product.variations+1}}">Variant Name <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="var_name[]" id="product_name_{{product.variations+1}}" placeholder="Variation Name">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="price_{{product.variations+1}}">Product Price <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" min="0" step="0.01" class="form-control input-rounded" name="price[]" id="price_{{product.variations+1}}" placeholder="Product Price">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="discount_{{product.variations+1}}">Discount</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" min="0" step="0.01" class="form-control input-rounded" name="discount[]" id="discount_{{product.variations+1}}" placeholder="Discount">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="image_{{product.variations+1}}">Image</label>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image[]" id="image_{{product.variations+1}}" class="custom-file-input" onchange="document.getElementById('pre_image_{{product.variations+1}}').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_{{product.variations+1}}').style.display = 'block';"  accept="image/*">
+                                                        <label class="custom-file-label">Choose Image</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3" id="pre_img_div_{{product.variations+1}}" style="display: none; ">
+                                                <div class="input-group">
+                                                    <img src="#" height="100" width="100" id="pre_image_{{product.variations+1}}">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tags_{{product.variations+1}}">Product Tags <small>(Comma Separated)</small></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="tags[]" id="tags_{{product.variations+1}}" placeholder="Variant Tags">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="button" onclick="addNewVariant();">Add New Variant</button>
+                                </div>
+                                <div class="col-lg-8 order-lg-1">
+                                    <h4 class="mb-3">Product Information</h4>
+                                    <div class="mb-3">
+                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name" value="{{product.product_name}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description">Product Description <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="description" id="description" placeholder="Description Here.." required="">{{product.description}}</textarea> 
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="owner_share">Dibbs Fee (In Percentage) <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="owner_share" id="owner_share" placeholder="owner_share Name" value="{{product.owner_share}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="end_date">Product End Date<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="datepicker-default form-control"  name="end_date" id="end_date" placeholder="Product End Date" value="{{product.end_date}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="end_time">Product End Time<span class="text-danger">*</span></label>
+                                        <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true">
+                                            <!--<input type="text" class="form-control" value="13:14"> -->
+                                            <input type="text" class="form-control" name="end_time" id="end_time" placeholder="Product End Time" value="{{product.end_time}}" required="">
+                                            <span class="input-group-append"><span class="input-group-text"><i class="fa fa-clock-o"></i></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="return_policy">Return Policy</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="return_policy" id="return_policy" placeholder="Return Policy if any..">{{product.return_policy}}</textarea> 
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="purchase">Purchase Validity</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="purchase" id="purchase" placeholder="Example: 90 Days" value="{{product.purchase}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="purchase_limit">Purchase Per Person</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="purchase_limit" id="purchase_limit" placeholder="Example: 1 per Customer" value="{{product.per_person_purchase}}">
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="appointment">Appointment / Reservation Required</label>
+                                        <div class="input-group">
+                                            <input type="checkbox" class="form-control" name="appointment" id="appointment" value="Y"> Appointment / Reservation Required
+                                        </div>
+                                    </div>-->
+                                    <div class="custom-control custom-checkbox mb-3">
+										<input type="checkbox" class="custom-control-input" id="appointment" name="appointment" {% if product.appointment == 'Y' %}checked{% endif %} value="Y">
+										<label class="custom-control-label" for="appointment">Appointment / Reservation Required</label>
+									</div>
+                                    <div class="mb-3">
+                                        <label for="status">Product Status</label>
+                                        <div class="input-group">
+                                            <select class="form-control" name="status" id="status">
+                                                <option value="active" {% if product.status == 'active' %}selected="selected"{% endif %}>Active</option>
+                                                <option value="inactive" {% if product.status == 'inactive' %}selected="selected"{% endif %}>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="i">Product Images</label>
+                                        <div class="input-group1">
+                                            <div class="custom-file" style="min-height: 400px;">
+                                                <div class="input-images" style="background: url('{{constant('ASSETS_URL')}}imagess/upload.png');"></div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    {% for img in product.images %}
+                                    <div class="col-md-3" id="pre_images_{{img.auto_id}}">
+                                        <div class="input-group">
+                                            <img src="{{constant('SITE_URL')}}{{img.image}}" height="100" width="100">
+                                        </div>
+                                        <input type="hidden" name="pre_images[]" value="{{img.auto_id}}">
+                                        <div class="btn btn-sm btn-danger" onclick="$('#pre_images_{{img.auto_id}}').remove();">Remove Image</div>
+                                    </div>
+                                    {% endfor %}
+                                    {% for i in 1..5 %}
+                                    <div class="mb-3">
+                                        <label>Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" onchange="document.getElementById('pre_image_new_{{i}}').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new_{{i}}').style.display = 'block';"  accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="pre_img_div_new_{{i}}" style="display: none; ">
+                                            <div class="input-group">
+                                                <img src="#" height="100" width="100" id="pre_image_new_{{i}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    
+                                    <!--<div class="mb-3">
+                                        <label for="i">Product Images</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" id="prod_image_id" class="custom-file-input" multiple="multiple" accept="image/*">
+                                                <label class="custom-file-label">Choose Images</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="pre_prod_img_div">
+                                        <div class="prod_gallery" id="prod_gallery">
+                                            {% for img in product.images %}
+                                                <img src="{{constant('SITE_URL')}}{{img.image}}">
+                                            {% endfor %}
+                                        </div>
+                                    </div>-->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 order-lg-1">
+                                    <button class="btn btn-primary btn-block" type="submit">Add/Update Product</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function addNewVariant() {
+        var variations = $('#variations').val();
+        var newIndex = parseInt(variations) + 1;
+        $('#variations').val(newIndex);
+        var html = '<div id="var_section_'+newIndex+'" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;"><button class="btn btn-sm btn-danger" type="button" onclick="delVariant('+newIndex+');">Delete This Variant</button><div class="mb-3"><label for="product_name_'+newIndex+'">Variant Name <span class="text-danger">*</span></label><div class="input-group"><input type="text" class="form-control" name="var_name[]" id="product_name_'+newIndex+'" placeholder="Variation Name"></div></div><div class="row"><div class="col-md-6 mb-3"><label for="price_'+newIndex+'">Product Price <span class="text-danger">*</span></label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="price[]" id="price_'+newIndex+'" placeholder="Product Price"></div></div><div class="col-md-6 mb-3"><label for="discount_'+newIndex+'">Discount</label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="discount[]" id="discount_'+newIndex+'" placeholder="Discount"></div></div></div><div class="mb-3"><label for="image_'+newIndex+'">Image</label><div class="input-group"><div class="custom-file"><input type="file" name="image[]"  accept="image/*" id="image_'+newIndex+'" class="custom-file-input" onchange="document.getElementById(\'pre_image_'+newIndex+'\').src = window.URL.createObjectURL(this.files[0]); document.getElementById(\'pre_img_div_'+newIndex+'\').style.display = \'block\';" accept="image/*"><label class="custom-file-label">Choose Image</label></div></div></div><div class="mb-3" id="pre_img_div_'+newIndex+'" style="display: none; "><div class="input-group"><img src="#" height="100" width="100" id="pre_image_'+newIndex+'"></div></div><div class="mb-3"><label for="tags_'+newIndex+'">Product Tags <small>(Comma Separated)</small></label><div class="input-group"><input type="text" class="form-control" name="tags[]" id="tags_'+newIndex+'" placeholder="Variant Tags"></div></div></div>';
+        $('#pro_var').append(html);
+    }
+    
+    function delVariant(id) {
+        $('#var_section_'+id).hide('slow');
+        $('#var_section_'+id).html('');
+        var variations = $('#variations').val();
+        var newIndex = parseInt(variations) - 1;
+        $('#variations').val(newIndex);
+    }
+</script>
+{% endblock %}
+{% block extrajs %}
+<script src="{{constant('ASSETS_URL')}}vendor/moment/moment.min.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/pickadate/picker.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/pickadate/picker.time.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/pickadate/picker.date.js"></script>
+<script src="{{constant('ASSETS_URL')}}js/plugins-init/pickadate-init.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/clockpicker/js/bootstrap-clockpicker.min.js"></script>
+<script src="{{constant('ASSETS_URL')}}js/plugins-init/clock-picker-init.js"></script>
+<script src="{{constant('ASSETS_URL')}}vendor/uploader/image-uploader.js"></script>
+<script>
+    $(function() {
+        let preloaded = [
+            {% for img in product.images %}
+                {id: {{img.auto_id}}, src: '{{constant('SITE_URL')}}{{img.image}}'},
+            {% endfor %}
+        ];
+        $('.input-images').imageUploader({
+            preloaded: preloaded,
+            imagesInputName: 'prod_image',
+            preloadedInputName: 'prod_image_old'
+        });
+        // Multiple images preview in browser
+        /*var imagesPreview = function(input, placeToInsertImagePreview) {
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    console.log(window.URL.createObjectURL(input.files[i]));
+                    $($.parseHTML('<img>')).attr('src', window.URL.createObjectURL(input.files[i])).appendTo(placeToInsertImagePreview);
+                }
+            }
+        };
+
+        $('#prod_image_id').on('change', function() {
+            $('#pre_prod_img_div').hide();
+            $('#prod_gallery').html('');
+            imagesPreview(this, '#prod_gallery');
+            $('#pre_prod_img_div').show();
+        });*/
+    });
+</script>
+<style>
+    .prod_gallery img {
+        border: 1px solid #cecece;
+        border-radius: 2px;
+        height: 100px;
+        width: 100px;
+        padding: 5px;
+        margin-right: 8px;
+    }
+    .image-uploader .uploaded {
+        background: url('{{constant('ASSETS_URL')}}images/upload.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .uploaded {
+        min-height: 400px;
+    }
+    .uploaded .uploaded-image img {
+        border: 1px solid black;
+    }
+</style>
+{% endblock %}

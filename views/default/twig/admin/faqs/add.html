@@ -1,0 +1,59 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>FAQs</h4>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 order-lg-1"></div>
+                            <div class="col-lg-6 order-lg-1">
+                                <h4 class="mb-3">Add / Update FAQs</h4>
+                                <form method="post" action="" class="needs-validation">
+                                    <input type="hidden" name="auto_id" value="{{caption.auto_id}}" />
+                                    <div class="mb-3">
+                                        <label for="caption">Question</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="question" id="question" placeholder="Question?" required="" value="{{caption.question}}">
+                                            <div class="invalid-feedback d-none">
+                                                Question is required.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="answer">Answer</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" name="answer" id="answer" placeholder="Enter Answer here.." required="">{{caption.answer}}</textarea>
+                                            <div class="invalid-feedback d-none">
+                                                Answer is required.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="status">Status</label>
+                                        <div class="input-group">
+                                            <select class="form-control" name="status" id="status">
+                                                <option value="active" {% if caption.status == 'active' %} selected="selected" {% endif %}>Active</option>
+                                                <option value="inactive" {% if caption.status == 'inactive' %} selected="selected" {% endif %}>In-Active</option>
+                                            </select>
+                                            <div class="invalid-feedback d-none">
+                                                Status is required.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="mb-4">
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Add/Update FAQs</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

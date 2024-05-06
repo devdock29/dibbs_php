@@ -1,0 +1,160 @@
+{% extends '/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>Products</h4>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{constant('SITE_URL')}}products/index">All Products</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Add/Update Product</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% include '/layout/success-error.html' %}
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" enctype="multipart/form-data" method="post" action="">
+                            <input type="hidden" name="product_id" value="{{product.product_id}}" />
+                            <div class="row">
+                                <div class="col-lg-4 order-lg-2 mb-4">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Products Variations</span>
+                                        <span class="badge badge-primary badge-pill">{{product.variations}}</span>
+                                        <input type="hidden" name="variations" id="variations" value="{{product.variations+1}}" />
+                                    </h4>
+                                    <div id="pro_var">
+                                        {% for var in product.varData %}
+                                        <div id="var_section_{{loop.index}}" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;">
+                                            <button class="btn btn-sm btn-danger" type="button" onclick="delVariant({{loop.index}});">Delete This Variant</button>
+                                            <div class="mb-3">
+                                                <label for="product_name_{{loop.index}}">Variant Name <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control input" name="var_name[]" id="product_name_{{loop.index}}" placeholder="Variation Name" value="{{var.name}}" required="">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="price_{{loop.index}}">Product Price <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" class="form-control input-rounded" name="price[]" id="price_{{loop.index}}" placeholder="Product Price" value="{{var.price}}" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="discount_1">Discount</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" class="form-control input-rounded" name="discount[]" id="discount_{{loop.index}}" placeholder="Discount" value="{{var.discount}}" >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="image_{{loop.index}}">Image</label>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image[]" id="image_{{loop.index}}" class="custom-file-input">
+                                                        <label class="custom-file-label">Choose file</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tags_{{loop.index}}">Product Tags <small>(Comma Separated)</small></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="tags[]" id="tags_{{loop.index}}" placeholder="Variant Tags" value="{{var.tags}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        <div style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;">
+                                            <div class="mb-3">
+                                                <label for="product_name_{{product.variations+1}}">Variant Name <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="var_name[]" id="product_name_{{product.variations+1}}" placeholder="Variation Name">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="price_{{product.variations+1}}">Product Price <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" class="form-control input-rounded" name="price[]" id="price_{{product.variations+1}}" placeholder="Product Price">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="discount_{{product.variations+1}}">Discount</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input type="number" class="form-control input-rounded" name="discount[]" id="discount_{{product.variations+1}}" placeholder="Discount">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="image_{{product.variations+1}}">Image</label>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image[]" id="image_{{product.variations+1}}" class="custom-file-input">
+                                                        <label class="custom-file-label">Choose file</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tags_{{product.variations+1}}">Product Tags <small>(Comma Separated)</small></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="tags[]" id="tags_{{product.variations+1}}" placeholder="Variant Tags">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="button" onclick="addNewVariant();">Add New Variant</button>
+                                </div>
+                                <div class="col-lg-8 order-lg-1">
+                                    <h4 class="mb-3">Product Information</h4>
+                                    <div class="mb-3">
+                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name" value="{{product.product_name}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description">Product Description <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="description" id="description" placeholder="Description Here.." required="">{{product.product_name}}</textarea> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 order-lg-1">
+                                    <button class="btn btn-primary btn-block" type="submit">Add/Update Product</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function addNewVariant() {
+        var variations = $('#variations').val();
+        var newIndex = parseInt(variations) + 1;
+        var html = '<div id="var_section_'+newIndex+'" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;"><button class="btn btn-sm btn-danger" type="button" onclick="delVariant('+newIndex+');">Delete This Variant</button><div class="mb-3"><label for="product_name_'+newIndex+'">Variant Name <span class="text-danger">*</span></label><div class="input-group"><input type="text" class="form-control" name="var_name[]" id="product_name_'+newIndex+'" placeholder="Variation Name"></div></div><div class="row"><div class="col-md-6 mb-3"><label for="price_'+newIndex+'">Product Price <span class="text-danger">*</span></label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="price[]" id="price_'+newIndex+'" placeholder="Product Price"></div></div><div class="col-md-6 mb-3"><label for="discount_'+newIndex+'">Discount</label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="discount[]" id="discount_'+newIndex+'" placeholder="Discount"></div></div></div><div class="mb-3"><label for="image_'+newIndex+'">Image</label><div class="input-group"><div class="custom-file"><input type="file" name="image[]" id="image_'+newIndex+'" class="custom-file-input"><label class="custom-file-label">Choose file</label></div></div></div><div class="mb-3"><label for="tags_'+newIndex+'">Product Tags <small>(Comma Separated)</small></label><div class="input-group"><input type="text" class="form-control" name="tags[]" id="tags_'+newIndex+'" placeholder="Variant Tags"></div></div></div>';
+        $('#pro_var').append(html);
+    }
+    
+    function delVariant(id) {
+        $('#var_section_'+id).hide('slow');
+        $('#var_section_'+id).html('');
+    }
+</script>
+{% endblock %}

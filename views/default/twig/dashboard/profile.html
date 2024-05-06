@@ -1,0 +1,450 @@
+{% extends '/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>My Profile</h4>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{constant('SITE_URL')}}dashboard/index">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Update Profile</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                {% include '/layout/success-error.html' %}
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" enctype="multipart/form-data" method="post" action="">
+                            <input type="hidden" name="user_id" value="{{profile.user_id}}" />
+                            <input type="hidden" name="store_id" value="{{profile.store.store_id}}" />
+                            <input type="hidden" name="time_id" value="{{profile.store_timings.auto_id}}" />
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-8 order-lg-1">
+                                    <h4 class="mb-3">Personal Information</h4>
+                                    <div class="mb-3">
+                                        <label for="user_name">Full Name<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="user_name" id="user_name" placeholder="Full Name" value="{{profile.user_name}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email">Email<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="{{profile.email}}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="image_profile">Profile Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="image_profile" id="image_profile" class="custom-file-input" onchange="document.getElementById('pre_image_profile').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_image_profile').style.display = 'block';" accept="image/*">
+                                                <label class="custom-file-label">Choose Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="pre_img_div_image_profile" style="display: {% if profile.image == '' %}none{% endif %}; ">
+                                        <div class="input-group">
+                                            <img src="{{constant('SITE_URL')}}{{profile.image}}" height="100" width="100" id="pre_image_profile">
+                                        </div>
+                                    </div>
+                                    <h4 class="mb-3">Store Information</h4>
+                                    <div class="mb-3">
+                                        <label for="store_name">Store Name<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="store_name" id="store_name" placeholder="Store Name" value="{{profile.store.store_name}}" required>
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="start_time">Store Open Time<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="time" class="form-control" name="start_time" id="start_time" placeholder="start_time" value="{{profile.store.start_time}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="end_time">Store Close Time<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="time" class="form-control" name="end_time" id="end_time" placeholder="end_time" value="{{profile.store.end_time}}" required>
+                                        </div>
+                                    </div>-->
+                                    <div class="mb-3">
+                                        <label for="redeem_code">Store Redeem Code<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="redeem_code" id="redeem_code" placeholder="redeem_code" value="{{profile.store.redeem_code}}" required minlength="4" maxlength="6">
+                                        </div>
+                                        <small style="color: red;">Create a 4-6 digit redeem code to enter on your customers phone when they’re ready to redeem their deal.</small> 
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone">Phone #</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone #" value="{{profile.store.phone}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="website">Website</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="website" id="website" placeholder="Website" value="{{profile.store.website}}" >
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="location">Location (Lat Long) <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="location" id="location" placeholder="Location" value="{{profile.store.location}}" onblur="getLocation()" required>
+                                            
+                                        </div>
+                                    </div>-->
+                                    <div class="mb-3">
+                                        <label for="location">Location (Lat Long) <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="user_address" id="user_address" placeholder="Your Address" value="{{profile.store.address}}">
+                                            <input type="hidden" class="form-control" name="latlng" id="latlng" placeholder="Location" value="{{profile.store.location}}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="store_logo">Store Logo</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="store_logo" id="store_logo" class="custom-file-input" onchange="document.getElementById('pre_store_logo').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_store_logo').style.display = 'block';" accept="image/*">
+                                                <label class="custom-file-label">Choose Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="pre_img_div_store_logo" style="display: {% if profile.store.image == '' %}none{% endif %}; ">
+                                        <div class="input-group">
+                                            <img src="{{constant('SITE_URL')}}{{profile.store.image}}" height="100" width="100" id="pre_store_logo">
+                                        </div>
+                                    </div>
+                                    <h4 class="mb-3">Business Hours</h4>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Saturday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="sat_close" id="sat_close" value="Y" {% if profile.store_timings.sat_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('sat_close', 'sat')">
+                                                    <label class="custom-control-label" for="sat_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 sat" {% if profile.store_timings.sat_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="sat_start" id="sat_start" placeholder="Saturday Start Time" value="{{profile.store_timings.sat_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 sat" {% if profile.store_timings.sat_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="sat_end" id="sat_end" placeholder="Saturday End Time" value="{{profile.store_timings.sat_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Sunday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="sun_close" id="sun_close" value="Y" {% if profile.store_timings.sun_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('sun_close', 'sun')">
+                                                    <label class="custom-control-label" for="sun_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 sun" {% if profile.store_timings.sun_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="sun_start" id="sun_start" placeholder="Sunday Start Time" value="{{profile.store_timings.sun_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 sun" {% if profile.store_timings.sun_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="sun_end" id="sun_end" placeholder="Sunday End Time" value="{{profile.store_timings.sun_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Monday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="mon_close" id="mon_close" value="Y" {% if profile.store_timings.mon_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('mon_close', 'mon')">
+                                                    <label class="custom-control-label" for="mon_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 mon" {% if profile.store_timings.mon_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="mon_start" id="mon_start" placeholder="Monday Start Time" value="{{profile.store_timings.mon_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 mon" {% if profile.store_timings.mon_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="mon_end" id="mon_end" placeholder="Monday End Time" value="{{profile.store_timings.mon_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Tuesday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="tue_close" id="tue_close" value="Y" {% if profile.store_timings.tue_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('tue_close', 'tue')">
+                                                    <label class="custom-control-label" for="tue_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 tue" {% if profile.store_timings.tue_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="tue_start" id="tue_start" placeholder="Tuesday Start Time" value="{{profile.store_timings.tue_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 tue" {% if profile.store_timings.tue_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="tue_end" id="tue_end" placeholder="Tuesday End Time" value="{{profile.store_timings.tue_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Wednesday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="wed_close" id="wed_close" value="Y" {% if profile.store_timings.wed_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('wed_close', 'wed')">
+                                                    <label class="custom-control-label" for="wed_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 wed" {% if profile.store_timings.wed_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="wed_start" id="wed_start" placeholder="Wednesday Start Time" value="{{profile.store_timings.wed_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 wed" {% if profile.store_timings.wed_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="wed_end" id="wed_end" placeholder="Wednesday End Time" value="{{profile.store_timings.wed_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Thursday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="thur_close" id="thur_close" value="Y" {% if profile.store_timings.thur_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('thur_close', 'thur')">
+                                                    <label class="custom-control-label" for="thur_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 thur">
+                                                <div class="input-group" {% if profile.store_timings.thur_close =="Y" %} style="display: none;" {% endif %}>
+                                                    <input type="time" class="form-control" name="thur_start" id="thur_start" placeholder="Thursday Start Time" value="{{profile.store_timings.thur_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 thur" {% if profile.store_timings.thur_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="thur_end" id="thur_end" placeholder="Thursday End Time" value="{{profile.store_timings.thur_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sat_start">Friday<span class="text-danger">*</span></label>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" class="custom-control-input" name="fri_close" id="fri_close" value="Y" {% if profile.store_timings.fri_close =="Y" %}checked="checked" {% endif %} onchange="showHideTime('fri_close', 'fri')">
+                                                    <label class="custom-control-label" for="fri_close">Closed</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 fri" {% if profile.store_timings.fri_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="fri_start" id="fri_start" placeholder="Friday Start Time" value="{{profile.store_timings.fri_start}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 fri" {% if profile.store_timings.fri_close =="Y" %} style="display: none;" {% endif %}>
+                                                <div class="input-group">
+                                                    <input type="time" class="form-control" name="fri_end" id="fri_end" placeholder="Friday End Time" value="{{profile.store_timings.fri_end}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4 class="mb-3">Security Information</h4>
+                                    <div class="mb-3">
+                                        <label for="password">New Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" name="password" id="password" placeholder="Change Password" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 order-lg-1">
+                                    <button class="btn btn-primary btn-block" type="submit">Update Profile</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCj3xKFY4R1Aj1vOfr2rvWZMJhvN1qeV5A&libraries=places"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+<script>
+    var show_landmark_map = true;
+    var go_checkout = false;
+    var locationErrorMsg = 'Please allow the browser to access your location and try again.';
+    //document.getElementById('#currentLocationModal').val('');
+    var initMap = function (extra = '') {
+        isMapInitialize = true;
+        new AutocompleteDirectionsHandler(extra);
+    }
+    function AutocompleteDirectionsHandler(extra = '') {
+        me = this;
+        this.originPlaceId = null;
+        this.travelMode = 'DRIVING';
+        var originInput = document.getElementById('user_address' + extra);
+        var optionsRestriction = {
+            //componentRestrictions: {country: "pk"}
+        };
+        originAutocomplete = new google.maps.places.Autocomplete(originInput, optionsRestriction);
+        originAutocomplete.setFields(['address_components','place_id', 'geometry', 'name','formatted_address','plus_code']);
+        this.setupPlaceChangedListener(originAutocomplete, "ORIG", extra);
+    }
+    AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (
+            autocomplete, mode, extra = '') {
+        me = this;
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (typeof place == 'object') {
+                if (!place.place_id) {
+                    return;
+                }
+                var latLoc = place.geometry.location.lat();
+                var longLoc = place.geometry.location.lng();
+                const latlng = {
+                    lat: parseFloat(latLoc),
+                    lng: parseFloat(longLoc)
+                };
+                if (mode === 'ORIG') {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode(
+                        {
+                          location: latlng
+                        },
+                        (results, status) => {
+                            if (status === "OK") {
+                                console.log(results[0]);
+                                if (results[0]) {
+                                    if(typeof results[0].plus_code!== undefined){
+                                        city = results[0].plus_code.compound_code;
+                                        city = city.substr(0,city.indexOf(','));
+                                        city = city.split(' ')[1];
+                                        console.log(city);
+                                        if(city!=''){
+                                            var x = document.getElementById('address_city');
+                                            for(var i=0;i<x.options.length;i++){
+                                                if(city==x.options[i].text){
+                                                    x.selectedIndex=i;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                    $("#user_address" + extra).val(place.formatted_address);
+                    $('#latlng' + extra).val(latLoc + "," + longLoc);
+                    $("#choose-location").val(latLoc + "," + longLoc);
+                }
+            }
+        });
+    };
+    $(document).ready(function(){
+        initMap();
+        document.getElementById('user_address').addEventListener('blur', (event) => {
+            if(show_landmark_map===false){
+                //$('#user_address').val(item);
+                if($('#user_address').val()!=$('#user_tmp_address').val()){
+                    $('#modal_address_field').html($('#user_address').val());
+                    $('#mark_location').modal('show');
+                }
+            }
+        }, true);
+    });
+    $(':input').change(function(){
+        $(this).val($(this).val().trim());
+    });
+    $(document).ready(function (e) {
+        $('#login-form-redirect-url').val('https://azhar.dukan.pk/cart');
+        $('.top-nav-login-btn').on('click', function (e) {
+            $('#login-form-redirect-url').val('https://azhar.dukan.pk/cart');
+        })
+    })
+    $(document).on('hide.bs.modal','#mark_location', function () {
+        map_modal_closed = true;
+        if($('#latlng').val()!==undefined){
+                latlngarray =  $('#latlng').val().split(',');
+                const latlng = {
+                    lat: parseFloat(latlngarray[0]),
+                    lng: parseFloat(latlngarray[1])
+                };
+            }else{
+                const latlng = {
+                    lat: 31.52,
+                    lng: 74.35
+                };
+            }
+
+            const mapOptions = {
+                                        center: latlng,
+                                        zoom: 15.5,
+                                        gestureHandling: "greedy",
+                                        disableDefaultUI: true,
+                                    }
+                        var map2 = new google.maps.Map(document.getElementById('map-box3'), mapOptions);
+                        map2.addListener('dragend', () => {
+                                    console.log('dragend');
+                                    mapCenter = map2.getCenter();
+                                    mapLocationSet = true;
+                                    $('#currentLocLatitude').val(mapCenter.lat());
+                                    $('#currentLocLongitude').val(mapCenter.lng());
+                                    console.log('set_address'+mapCenter.lat());
+                                    //$('#latlng').val(mapCenter.lat()+','+mapCenter.lng());
+                                    $('#user_latlng').val(mapCenter.lat()+','+mapCenter.lng());
+                                    $("#choose-location").val(mapCenter.lat() + "," + mapCenter.lng());
+                                    //$('#currentLocationModal').val('Location selected on map');
+                                   // $('#currentLocationModal').text('Location selected on map');
+                                    $('.getresturant').prop('disabled', false);
+                                    $('.getresturant').addClass('active');
+                                });
+                        $('<div/>').addClass('centerMarker').appendTo(map2.getDiv())
+    });
+</script>
+{% endblock %}
+{% block extrajs %}
+<script>
+    function showHideTime(checkbox, divs) {
+        if($('#' + checkbox).is(":checked")) {
+            $("." + divs).hide('slow');
+        } else {
+            $("." + divs).show('slow');
+        }
+    }
+    var x = document.getElementById("location");
+    $("#location").focus(function () {
+        getLocation()
+    });
+    function getLocation() {
+        if (navigator.geolocation) {
+            $("#location").val('Locatiing you... Please allow permissions');
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+    function showPosition(position) {
+        $("#location").val(position.coords.latitude + "," + position.coords.longitude);
+    }
+</script>
+{% endblock %}

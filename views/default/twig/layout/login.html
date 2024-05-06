@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {{nas('loadMeta')|raw}}
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{{constant('ASSETS_URL')}}images/favicon.png">
+    <link href="{{constant('ASSETS_URL')}}css/style.css" rel="stylesheet">
+	
+</head>
+
+<body class="h-100">
+    {% block main %}
+        <!-- Main Block -->
+    {% endblock %}
+    
+    <script src="{{constant('ASSETS_URL')}}vendor/global/global.min.js"></script>
+	<script src="{{constant('ASSETS_URL')}}vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="{{constant('ASSETS_URL')}}js/custom.min.js"></script>
+    <script src="{{constant('ASSETS_URL')}}js/deznav-init.js"></script>
+</body>
+</html>
