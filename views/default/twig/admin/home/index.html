@@ -33,10 +33,15 @@
                                         <label class="mb-1 text-white"><strong>Email</strong></label>
                                         <input type="email" class="form-control" name="email" id="email" placeholder="admin@dibbs.com" required>
                                     </div>
-                                    <!--<div class="form-group">
+                                    <div class="form-group">
                                         <label class="mb-1 text-white"><strong>Password</strong></label>
-                                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                                    </div>-->
+                                        <div class="input-group">
+                                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-danger" type="button" onclick="tooglePassword('password')">Show/Hide</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="form-row d-flex justify-content-between mt-4 mb-2">
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox ml-1 text-white">
@@ -44,17 +49,17 @@
                                                 <label class="custom-control-label" for="basic_checkbox_1">Remember my preference</label>
                                             </div>
                                         </div>
-                                        <!--<div class="form-group">
+                                        <div class="form-group">
                                             <a class="text-white" href="{{constant('SITE_URL')}}user/forgotPassword">Forgot Password?</a>
-                                        </div>-->
+                                        </div>
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn bg-white text-primary btn-block">Sign Me In</button>
                                     </div>
                                 </form>
-                                <!--<div class="new-account mt-3">
+                                <div class="new-account mt-3">
                                     <p class="text-white">Don't have an account? <a class="text-white" href="{{constant('SITE_URL')}}user/register">Sign up</a></p>
-                                </div>-->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,4 +68,19 @@
         </div>
     </div>
 </div>
+<script>
+     function tooglePassword(id) {
+        var x = document.getElementById(id);
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+
+    function onAnalyticsBtnCLick(id) {
+        alert("Form Analytics successfully!");
+
+    }
+</script>
 {% endblock %}

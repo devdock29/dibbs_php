@@ -7,6 +7,7 @@ function trackEvent($eventCategory, $eventAction, $eventLabel = null, $eventValu
     }
     if ($eventValue) {
         echo ", 'value': {$eventValue}";
+       
     }
     echo '});';
     echo '</script>';
