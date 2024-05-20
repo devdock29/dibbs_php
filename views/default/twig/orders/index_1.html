@@ -118,7 +118,7 @@
                                     <th>Product Name</th>
                                     <th>Description</th>
                                     <th>Price</th>
-                                    <!-- <th>Discount</th> -->
+                                    <th>Discount</th>
                                     <th>Added On</th>
                                     <th>Status</th>
                                     <th></th>
@@ -143,7 +143,7 @@
                                     </td>
                                     <td><span class="text-black">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description }}</span></td>
                                     <td><span class="text-black">$&nbsp;{{product.price|number_format}}</span></td>
-                                    <!-- <td><span class="text-black">$&nbsp;{{product.discount|number_format}}</span></td> -->
+                                    <td><span class="text-black">$&nbsp;{{product.discount|number_format}}</span></td>
                                     <td><span class="text-black">{{product.added_on|date("d M, Y H:i:s")}}</span></td>
                                     <td><a href="javascript:void(0)" class="btn btn-success btn-sm btn-rounded">{{product.status}}</a></td>
                                     <td>
