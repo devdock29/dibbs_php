@@ -20,7 +20,7 @@ class OrdersModel extends AppModel {
         $searchArr = [
             "fields" => "*",
             "whereClause" => " 1 ",
-            "whereParams" => [""]
+            "whereParams" => []
         ];
         if (!empty($arr['store_id'])) {
             $searchArr["whereClause"] .= " AND store_id = ? ";
