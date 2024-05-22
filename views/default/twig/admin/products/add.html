@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/pickadate/themes/default.date.css">
 <link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/clockpicker/css/bootstrap-clockpicker.min.css">
 <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/uploader/image-uploader.css">
+<!--<link rel="stylesheet" href="{{constant('ASSETS_URL')}}vendor/uploader/image-uploader.css">-->
 <div class="content-body">
     <div class="container-fluid">
         <div class="page-titles">
@@ -22,7 +22,171 @@
                         <form class="needs-validation" enctype="multipart/form-data" method="post" action="">
                             <input type="hidden" name="product_id" value="{{product.product_id}}" />
                             <div class="row">
-                                <div class="col-lg-4 order-lg-2 mb-4">
+                                
+                                <div class="col-lg-8">
+                                    <h4 class="mb-3">Product Information</h4>
+                                    <div class="mb-3">
+                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name" value="{{product.product_name}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description">Product Description <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="description" minlength="100" id="description" placeholder="Description Here.." required="">{{product.description}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="return_policy">Category</label>
+                                        <div class="input-group">
+                                            <select class="form-control" name="category" id="category" required>
+                                                <option value="">Select Category</option>
+                                                {% for cat in categories %}
+                                                    <option value="{{cat.id}}" {% if cat.id == product.category %}selected{% endif %}>{{cat.name}}</option>
+                                                {% endfor %}
+                                            </select> 
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="owner_share">Owner Share (In Percentage)</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="owner_share" id="product_name" placeholder="owner_share Name" value="{{product.owner_share}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="end_date">Product End Date<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="datepicker-default form-control"  name="end_date" id="end_date" placeholder="Product End Date" value="{{product.end_date}}" required="">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="end_time">Product End Time<span class="text-danger">*</span></label>
+                                        <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true">
+                                            <input type="time" class="form-control" name="end_time" id="end_time" placeholder="Product End Time" value="{{product.end_time}}" required="">
+                                            <span class="input-group-append"><span class="input-group-text"><i class="fa fa-clock-o"></i></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="return_policy">Return Policy</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="return_policy" id="return_policy" placeholder="Return Policy if any..">{{product.return_policy}}</textarea> 
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="purchase">Purchase Validity</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="purchase" id="purchase" placeholder="Valid after purchase" value="{{product.purchase}}">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="purchase_limit">Purchase Per Person</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="purchase_limit" id="purchase_limit" placeholder="Valid after purchase" value="{{product.per_person_purchase}}">
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="appointment">Appointment / Reservation Required</label>
+                                        <div class="input-group">
+                                            <input type="checkbox" class="form-control" name="appointment" id="appointment" value="Y"> Appointment / Reservation Required
+                                        </div>
+                                    </div>-->
+                                    <div class="custom-control custom-checkbox mb-3">
+										<input type="checkbox" class="custom-control-input" id="appointment" name="appointment" {% if product.appointment == 'Y' %}checked{% endif %} value="Y">
+										<label class="custom-control-label" for="appointment">Appointment / Reservation Required</label>
+									</div>
+                                    <div class="mb-3">
+                                        <label for="status">Product Status</label>
+                                        <div class="input-group">
+                                            <select class="form-control" name="status" id="status">
+                                                <option value="active" {% if product.status == 'active' %}selected="selected"{% endif %}>Active</option>
+                                                <option value="inactive" {% if product.status == 'inactive' %}selected="selected"{% endif %}>Inactive</option>
+                                                <option value="deleted" {% if product.status == 'deleted' %}selected="selected"{% endif %}>Delete</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="i">Product Images</label>
+                                        <div class="input-group1">
+                                            <div class="custom-file" style="min-height: 400px;">
+                                                <div class="input-images" style="background: url('{{constant('ASSETS_URL')}}imagess/upload.png');"></div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    <div class="mb-3">
+                                        <label>Search Image</label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="bottom" title="Don’t have your own images to upload? Search our database and add a picture that represents your offer.">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="autocomplete" placeholder="keyword to search images and click the image to select" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Upload Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" onchange="document.getElementById('pre_image_new_0').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new_0').style.display = 'block';"  accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="pre_img_div_new_0" style="display: none; ">
+                                            <div class="input-group">
+                                                <img src="#" height="100" width="100" id="pre_image_new_0">
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" onchange="document.getElementById('pre_image_new_1').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new_1').style.display = 'block';"  accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="pre_img_div_new_1" style="display: none; ">
+                                            <div class="input-group">
+                                                <img src="#" height="100" width="100" id="pre_image_new_1">
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" onchange="document.getElementById('pre_image_new_2').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new_2').style.display = 'block';"  accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="pre_img_div_new_2" style="display: none; ">
+                                            <div class="input-group">
+                                                <img src="#" height="100" width="100" id="pre_image_new_2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="uploaded">
+                                            {% for img in product.images %}
+                                            <div class='uploaded-image' data-index='0'>
+                                                <img src='{{img.image_full}}'>
+                                                <input type='hidden' value='{{img.image}}' name='new_images[]' >
+                                                <button type='button' class='delete-image' onclick="$(this).closest('.uploaded-image').remove(); $('#autocomplete').val(''); return false;">
+                                                    <i class='material-icons'>clear</i>
+                                                </button>
+                                            </div>
+                                            {% endfor %}
+                                            <span class="new_images"></span>
+                                        </div>
+                                    </div>
+                                    <!--<div class="mb-3">
+                                        <label for="i">Product Images</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="prod_image[]" id="prod_image_id" class="custom-file-input" multiple="multiple" accept="image/*">
+                                                <label class="custom-file-label">Choose Images</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="pre_prod_img_div">
+                                        <div class="prod_gallery" id="prod_gallery">
+                                            {% for img in product.images %}
+                                                <img src="{{constant('SITE_URL')}}{{img.image}}">
+                                            {% endfor %}
+                                        </div>
+                                    </div>-->
+                                </div>
+                                <div class="col-lg-4 mb-4">
                                     <h4 class="d-flex justify-content-between align-items-center mb-3">
                                         <span class="text-muted">Products Variations</span>
                                         <span class="badge badge-primary badge-pill">{{product.variations}}</span>
@@ -121,126 +285,6 @@
                                     </div>
                                     <button class="btn btn-primary" type="button" onclick="addNewVariant();">Add New Variant</button>
                                 </div>
-                                <div class="col-lg-8 order-lg-1">
-                                    <h4 class="mb-3">Product Information</h4>
-                                    <div class="mb-3">
-                                        <label for="product_name">Product Name <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name" value="{{product.product_name}}" required="">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="description">Product Description <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <textarea class="form-control" rows="5" name="description" id="description" placeholder="Description Here.." required="">{{product.description}}</textarea> 
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="owner_share">Owner Share (In Percentage)</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="owner_share" id="product_name" placeholder="owner_share Name" value="{{product.owner_share}}">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="end_date">Product End Date<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <input type="text" class="datepicker-default form-control"  name="end_date" id="end_date" placeholder="Product End Date" value="{{product.end_date}}" required="">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="end_time">Product End Time<span class="text-danger">*</span></label>
-                                        <div class="input-group clockpicker" data-placement="bottom" data-align="top" data-autoclose="true">
-                                            <input type="text" class="form-control" name="end_time" id="end_time" placeholder="Product End Time" value="{{product.end_time}}" required="">
-                                            <span class="input-group-append"><span class="input-group-text"><i class="fa fa-clock-o"></i></span></span>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="return_policy">Return Policy</label>
-                                        <div class="input-group">
-                                            <textarea class="form-control" rows="5" name="return_policy" id="return_policy" placeholder="Return Policy if any..">{{product.return_policy}}</textarea> 
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="purchase">Purchase Validity</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="purchase" id="purchase" placeholder="Valid after purchase" value="{{product.purchase}}">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="purchase_limit">Purchase Per Person</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="purchase_limit" id="purchase_limit" placeholder="Valid after purchase" value="{{product.per_person_purchase}}">
-                                        </div>
-                                    </div>
-                                    <!--<div class="mb-3">
-                                        <label for="appointment">Appointment / Reservation Required</label>
-                                        <div class="input-group">
-                                            <input type="checkbox" class="form-control" name="appointment" id="appointment" value="Y"> Appointment / Reservation Required
-                                        </div>
-                                    </div>-->
-                                    <div class="custom-control custom-checkbox mb-3">
-										<input type="checkbox" class="custom-control-input" id="appointment" name="appointment" {% if product.appointment == 'Y' %}checked{% endif %} value="Y">
-										<label class="custom-control-label" for="appointment">Appointment / Reservation Required</label>
-									</div>
-                                    <div class="mb-3">
-                                        <label for="status">Product Status</label>
-                                        <div class="input-group">
-                                            <select class="form-control" name="status" id="status">
-                                                <option value="active" {% if product.status == 'active' %}selected="selected"{% endif %}>Active</option>
-                                                <option value="inactive" {% if product.status == 'inactive' %}selected="selected"{% endif %}>Inactive</option>
-                                                <option value="deleted" {% if product.status == 'deleted' %}selected="selected"{% endif %}>Delete</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <!--<div class="mb-3">
-                                        <label for="i">Product Images</label>
-                                        <div class="input-group1">
-                                            <div class="custom-file" style="min-height: 400px;">
-                                                <div class="input-images" style="background: url('{{constant('ASSETS_URL')}}imagess/upload.png');"></div>
-                                            </div>
-                                        </div>
-                                    </div>-->
-                                    {% for img in product.images %}
-                                    <div class="col-md-3" id="pre_images_{{img.auto_id}}">
-                                        <div class="input-group">
-                                            <img src="{{constant('SITE_URL')}}{{img.image}}" height="100" width="100">
-                                        </div>
-                                        <input type="hidden" name="pre_images[]" value="{{img.auto_id}}">
-                                        <div class="btn btn-sm btn-danger" onclick="$('#pre_images_{{img.auto_id}}').remove();">Remove Image</div>
-                                    </div>
-                                    {% endfor %}
-                                    {% for i in 1..5 %}
-                                    <div class="mb-3">
-                                        <label>Image</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" name="prod_image[]" onchange="document.getElementById('pre_image_new_{{i}}').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new_{{i}}').style.display = 'block';"  accept="image/*">
-                                            </div>
-                                        </div>
-                                        <div class="mb-3" id="pre_img_div_new_{{i}}" style="display: none; ">
-                                            <div class="input-group">
-                                                <img src="#" height="100" width="100" id="pre_image_new_{{i}}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                    <!--<div class="mb-3">
-                                        <label for="i">Product Images</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" name="prod_image[]" id="prod_image_id" class="custom-file-input" multiple="multiple" accept="image/*">
-                                                <label class="custom-file-label">Choose Images</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3" id="pre_prod_img_div">
-                                        <div class="prod_gallery" id="prod_gallery">
-                                            {% for img in product.images %}
-                                                <img src="{{constant('SITE_URL')}}{{img.image}}">
-                                            {% endfor %}
-                                        </div>
-                                    </div>-->
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 order-lg-1">
@@ -254,15 +298,44 @@
         </div>
     </div>
 </div>
+<!-- Button trigger modal -->
+<div class="modal fade" id="exampleModalCenter">
+    <div class="modal-dialog modal-dialog-centered bd-example-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search Images</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="roqw">
+                    <div class="mb-1q2">
+                        <label for="search_more_images">Search Image</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search_more_images" id="search_more_images" placeholder="Search Image" value=""> <!-- onKeyUp="laodMoreImages(this.value, $('#pageCount').val(), 'Y')" -->
+                            <button type="button" class="btn btn-primary btn-sm" onClick="laodMoreImages($('#search_more_images').val(), $('#pageCount').val(), 'Y')">Search</button>
+                        </div>
+                    </div>
+                    <div class="mb-3 load_more_image_div">
+                    </div>
+                </div>
+                <input type="hidden" id="pageCount" value="1">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="close_more_images btn btn-danger light" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function addNewVariant() {
         var variations = $('#variations').val();
         var newIndex = parseInt(variations) + 1;
         $('#variations').val(newIndex);
-        var html = '<div id="var_section_'+newIndex+'" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;"><button class="btn btn-sm btn-danger" type="button" onclick="delVariant('+newIndex+');">Delete This Variant</button><div class="mb-3"><label for="product_name_'+newIndex+'">Variant Name <span class="text-danger">*</span></label><div class="input-group"><input type="text" class="form-control" name="var_name[]" id="product_name_'+newIndex+'" placeholder="Variation Name"></div></div><div class="row"><div class="col-md-6 mb-3"><label for="price_'+newIndex+'">Product Price <span class="text-danger">*</span></label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="price[]" id="price_'+newIndex+'" placeholder="Product Price" min="0" step="0.01"></div></div><div class="col-md-6 mb-3"><label for="discount_'+newIndex+'">Discount</label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="discount[]" id="discount_'+newIndex+'" placeholder="Discount" min="0" step="0.01"></div></div></div><div class="mb-3"><label for="image_'+newIndex+'">Image</label><div class="input-group"><div class="custom-file"><input type="file" name="image[]" id="image_'+newIndex+'" class="custom-file-input"><label class="custom-file-label">Choose file</label></div></div></div><div class="mb-3"><label for="tags_'+newIndex+'">Product Tags <small>(Comma Separated)</small></label><div class="input-group"><input type="text" class="form-control" name="tags[]" id="tags_'+newIndex+'" placeholder="Variant Tags"></div></div></div>';
+        var html = '<div id="var_section_'+newIndex+'" style="border: 2px solid #efefef; padding: 10px; border-radius: 5px;"><button class="btn btn-sm btn-danger" type="button" onclick="delVariant('+newIndex+');">Delete This Offer</button><div class="mb-3"><label for="product_name_'+newIndex+'">Offer Title <span class="text-danger">*</span></label><div class="input-group"><input type="text" class="form-control" name="var_name[]" id="product_name_'+newIndex+'" placeholder="Enter Offer Name"></div></div><div class="row"><div class="col-md-6 mb-3"><label for="price_'+newIndex+'">Offer Price <span class="text-danger">*</span></label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="price[]" id="price_'+newIndex+'" placeholder="Price"></div></div><div class="col-md-6 mb-3"><label for="discount_'+newIndex+'">Discount</label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" class="form-control input-rounded" name="discount[]" id="discount_'+newIndex+'" placeholder="Discount"></div></div><div class="col-md-12 mb-12"><p>List the original price of your offer and add the discount you will apply to it. For example: If your offer cost $100 and you want to give a discount of $10, customers will see it available for 10% off at $90 on the app.</p></div></div><!--<div class="mb-3"><label for="image_'+newIndex+'">Image</label><div class="input-group"><div class="custom-file"><input type="file" name="image[]"  accept="image/*" id="image_'+newIndex+'" class="custom-file-input" onchange="document.getElementById(\'pre_image_'+newIndex+'\').src = window.URL.createObjectURL(this.files[0]); document.getElementById(\'pre_img_div_'+newIndex+'\').style.display = \'block\';" accept="image/*"><label class="custom-file-label">Choose Image</label></div></div></div><div class="mb-3" id="pre_img_div_'+newIndex+'" style="display: none; "><div class="input-group"><img src="#" height="100" width="100" id="pre_image_'+newIndex+'"></div></div><div class="mb-3"><label for="tags_'+newIndex+'">Product Tags <small>(Comma Separated)</small></label><div class="input-group"><input type="text" class="form-control" name="tags[]" id="tags_'+newIndex+'" placeholder="Variant Tags"></div></div>--></div>';
         $('#pro_var').append(html);
     }
-    
+
     function delVariant(id) {
         $('#var_section_'+id).hide('slow');
         $('#var_section_'+id).html('');
@@ -279,58 +352,91 @@
 <script src="{{constant('ASSETS_URL')}}vendor/pickadate/picker.time.js"></script>
 <script src="{{constant('ASSETS_URL')}}vendor/pickadate/picker.date.js"></script>
 <script src="{{constant('ASSETS_URL')}}js/plugins-init/pickadate-init.js"></script>
-<script src="{{constant('ASSETS_URL')}}vendor/clockpicker/js/bootstrap-clockpicker.min.js"></script>
-<script src="{{constant('ASSETS_URL')}}js/plugins-init/clock-picker-init.js"></script>
-<script src="{{constant('ASSETS_URL')}}vendor/uploader/image-uploader.js"></script>
-<script>
-    $(function() {
-        let preloaded = [
-            {% for img in product.images %}
-                {id: {{img.auto_id}}, src: '{{constant('SITE_URL')}}{{img.image}}'},
-            {% endfor %}
-        ];
-        $('.input-images').imageUploader({
-            preloaded: preloaded,
-            imagesInputName: 'prod_image',
-            preloadedInputName: 'prod_image_old'
-        });
-        // Multiple images preview in browser
-        /*var imagesPreview = function(input, placeToInsertImagePreview) {
-            if (input.files) {
-                var filesAmount = input.files.length;
-                for (i = 0; i < filesAmount; i++) {
-                    $($.parseHTML('<img>')).attr('src', window.URL.createObjectURL(input.files[i])).appendTo(placeToInsertImagePreview);
-                }
-            }
-        };
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-        $('#prod_image_id').on('change', function() {
-            $('#pre_prod_img_div').hide();
-            $('#prod_gallery').html('');
-            imagesPreview(this, '#prod_gallery');
-            $('#pre_prod_img_div').show();
-        });*/
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    function laodMoreImages(search, page, reset) {
+        if(reset == 'Y') {
+            $('.load_more_image_div').html('');
+        }
+        $.ajax({
+            url: "{{constant('SITE_URL')}}services/home/getImages/?page="+page+"&term="+search,
+            success: function(result) {
+                jQuery.each(result, function(index, item) {
+                    var html = '<div class="modalsImages" onClick="selectImage(\''+item.value+'\'); $(this).hide();" style="cursor:pointer;">'+item.label+'</div>';
+                    $('.load_more_image_div').append(html);
+                });
+                $('#pageCount').val(page);
+            }
+        });
+    }
+    function selectImage(image) {
+        if(image == 'load_more') {
+            var search = $('#search_more_images').val();
+            var page = parseInt($('#pageCount').val());
+            laodMoreImages(search, parseInt(page+1), 'N');
+            //obj.hide();
+        } else {
+            $('#search_more_images').val('');
+            $('.new_images').append("<div class='uploaded-image' data-index='0'><img src='"+ image +"'><input type='hidden' value='"+ image +"' name='new_images[]' ><button type='button' class='delete-image' onclick='$(this).closest(\".uploaded-image\").remove(); $(\"#autocomplete\").val(\"\"); return false;'><i class='material-icons'>clear</i></button></div>");
+            $('.close_more_images').trigger("click");
+            $('.load_more_image_div').html('');
+        }
+    }
+    $(document).ready(function(){
+        $('#autocomplete').autocomplete({
+            source: "{{constant('SITE_URL')}}services/home/getImages",
+            minLength: 1,
+            select: function(event, ui) {
+                if(ui.item.value == 'load_more') {
+                    var oldSearch = $('#autocomplete').val();
+                    $('#search_more_images').val(oldSearch);
+                    laodMoreImages(oldSearch, 1, 'Y');
+                    $('.show_more_images').trigger("click");
+                } else {
+                    $('.new_images').append("<div class='uploaded-image' data-index='0'><img src='"+ ui.item.value +"'><input type='hidden' value='"+ ui.item.value +"' name='new_images[]' ><button type='button' class='delete-image' onclick='$(this).closest(\".uploaded-image\").remove(); $(\"#autocomplete\").val(\"\"); return false;'><i class='material-icons'>clear</i></button></div>");
+                }
+                $(this).val('');
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function(ul, item){
+            return $("<li class='ui-autocomplete-row'></li>")
+                .data("item.autocomplete", item)
+                .append(item.label)
+                .appendTo(ul);
+        };
     });
 </script>
 <style>
-    .prod_gallery img {
-        border: 1px solid #cecece;
-        border-radius: 2px;
-        height: 100px;
-        width: 100px;
-        padding: 5px;
-        margin-right: 8px;
+    .ui-menu .ui-menu-item, .modalsImages {display: inline-block;}
+    .modal{}
+    .fade:not(.show) {opacity : 1;}
+    .tooltip-inner{opacity: 0.9; border-radius: 10px;}
+    .modal-dialog {max-width: 70% !important;}
+    .modalsImages img{border-radius: 10px; padding: 5px;}
+    .uploaded{padding:.5rem; line-height:0}
+    .uploaded .uploaded-image{display:inline-block; width:calc(16.6666667% - 1rem); padding-bottom:calc(16.6666667% - 1rem);height:0;position:relative;margin:.5rem;background:#f3f3f3;cursor:default}
+    .uploaded .uploaded-image img{width:100%;height:100%;object-fit:cover;position:absolute; border-color:white; border-radius: 10px;}
+    .uploaded .uploaded-image .delete-image{display:none;cursor:pointer;position:absolute;top:.2rem;right:.2rem;border-radius:50%;padding:.3rem;background-color:rgba(0,0,0,.5);-webkit-appearance:none;border:none}
+    .uploaded .uploaded-image:hover .delete-image{display:block}
+    .uploaded .uploaded-image .delete-image i{color:#fff;font-size:1.4rem}
+    @media (min-width: 300px) {
+        .uploaded .uploaded-image{width:calc(40% - 1rem); padding-bottom:calc(40% - 1rem);}
     }
-    .image-uploader .uploaded {
-        background: url('{{constant('ASSETS_URL')}}images/upload.png');
-        background-repeat: no-repeat;
-        background-size: cover;
+    @media (min-width: 420px) {
+        .uploaded .uploaded-image{width:calc(30% - 1rem); padding-bottom:calc(30% - 1rem);}
     }
-    .uploaded {
-        min-height: 400px;
+    @media (min-width: 576px) {
+        .uploaded .uploaded-image{width:calc(30% - 1rem); padding-bottom:calc(30% - 1rem);}
     }
-    .uploaded .uploaded-image img {
-        border: 1px solid black;
+    @media (min-width: 768px) {
+        .uploaded .uploaded-image{width:calc(20% - 1rem); padding-bottom:calc(20% - 1rem);}
+    }
+    @media (max-width: 575px) {
+        .modal{left: 14%;}
     }
 </style>
 {% endblock %}

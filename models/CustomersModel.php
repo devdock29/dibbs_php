@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace models;
@@ -262,7 +262,7 @@ class CustomersModel extends AppModel {
                 . "<b>Regards</b><br/>"
                 . "The ".DOMAIN_NAME." Team",
                 "cc" => "",
-                "bcc" => $params['email'].",",
+                "bcc" => "",
                 "replyTo" => $params['email'],
             ];
             \helpers\Common::sendMail($mailParams);

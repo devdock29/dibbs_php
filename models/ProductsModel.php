@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace models;
@@ -19,9 +19,18 @@ class ProductsModel extends AppModel {
         $searchFilters = $this->getState('productSearch');
         $searchArr = [
             "fields" => "*",
-            "whereClause" => " status <> ? ",
-            "whereParams" => ["s", 'deleted']
+            "whereClause" => "  ",
+            "whereParams" => []
         ];
+        if (!empty($arr['status'])) {
+            $searchArr["whereClause"] .= " status = ? ";
+            $searchArr["whereParams"][0] .= "s";
+            $searchArr["whereParams"][] = $arr['status'];
+        } else {
+            $searchArr["whereClause"] .= " status <> ? ";
+            $searchArr["whereParams"][0] .= "s";
+            $searchArr["whereParams"][] = "deleted";
+        }
         if (!empty($searchFilters['store_id'])) {
             $searchArr["whereClause"] .= " AND store_id = ? ";
             $searchArr["whereParams"][0] .= "i";
@@ -50,16 +59,18 @@ class ProductsModel extends AppModel {
         $oProductVariationsModel = new \models\ProductVariationsModel();
         $oProductImagesModel = new \models\ProductImagesModel();
         $oStoresModel = new \models\StoresModel();
-        for ($d = 0; $d < COUNT($userData); $d++) {
-            $variations = $oProductVariationsModel->findAll([
-                "fields" => "name, image, price, discount, added_on, tags",
-                "whereClause" => " product_id = ? AND status = ? ",
-                "whereParams" => ["is", $userData[$d]["product_id"], "active"],
-            ]);
-            $userData[$d]["variations"] = count($variations);
-            $userData[$d]["images"] = $oProductImagesModel->findAll(["fields" => "image ", "whereClause" => "product_id = ? AND status = ? ", "whereParams" => ["is", $product_id,  "active"]]);
-            $userData[$d]["varData"] = $variations;
-            $userData[$d]["storeData"] = $oStoresModel->findByPK($userData[$d]['store_id'], "store_name");
+        if(!empty($userData)) {
+            for ($d = 0; $d < COUNT($userData); $d++) {
+                $variations = $oProductVariationsModel->findAll([
+                    "fields" => "name, image, price, discount, added_on, tags",
+                    "whereClause" => " product_id = ? AND status = ? ",
+                    "whereParams" => ["is", $userData[$d]["product_id"], "active"],
+                ]);
+                $userData[$d]["variations"] = $variations ? count($variations) : 0;
+                $userData[$d]["images"] = $oProductImagesModel->findAll(["fields" => "image ", "whereClause" => "product_id = ? AND status = ? ", "whereParams" => ["is", $product_id,  "active"]]);
+                $userData[$d]["varData"] = $variations;
+                $userData[$d]["storeData"] = $oStoresModel->findByPK($userData[$d]['store_id'], "store_name");
+            }
         }
 
         return ['products' => $userData, 'totalRecords' => $totalRecords];
@@ -73,11 +84,18 @@ class ProductsModel extends AppModel {
         $retData = ['code' => '00', 'status' => 'N'];
         $oLangsModel = new \models\LangsModel();
         if (empty($params['product_name'])) {
-            $retData["message"] = $oLangsModel->findByPK("1", "lang_en")["lang_en"];
+            $retData["message"] = $oLangsModel->findByPK("58", "lang_en")["lang_en"];
             return $retData;
         }
         if (empty($params['description'])) {
-            $retData["message"] = $oLangsModel->findByPK("1", "lang_en")["lang_en"];
+            $retData["message"] = $oLangsModel->findByPK("59", "lang_en")["lang_en"];
+            return $retData;
+        } elseif(strlen($params['description']) < 100) {
+            $retData["message"] = $oLangsModel->findByPK("60", "lang_en")["lang_en"];
+            return $retData;
+        }
+        if(empty($params['category'])) {
+            $retData["message"] = 'Please choose the category';//$oLangsModel->findByPK("56", "lang_en")["lang_en"];
             return $retData;
         }
         if (empty($params['price'])) {
@@ -92,6 +110,14 @@ class ProductsModel extends AppModel {
             $retData["message"] = $oLangsModel->findByPK("32", "lang_en")["lang_en"];
             return $retData;
         }
+        if((empty($params['new_images']) || COUNT($params['new_images']) == 0) && (empty($_FILES['prod_image']['name'][0]) || COUNT($_FILES['prod_image']) == 0)) {
+            $retData["message"] = $oLangsModel->findByPK("56", "lang_en")["lang_en"];
+            return $retData;
+        }
+        /*if(COUNT($_FILES['prod_image']) == 0) {
+            $retData["message"] = $oLangsModel->findByPK("56", "lang_en")["lang_en"];
+            return $retData;
+        }*/
         $image = "";
         /* if (!empty($_FILES['image']['name'])) {
           $image = \helpers\Common::uploadImage($_FILES, 'image');
@@ -103,11 +129,12 @@ class ProductsModel extends AppModel {
             "image" => !empty($image) ? $image : NULL,
             "discount" => $params['discount'],
             "tags" => $params['tags'],
-            "status" => !empty($params['status']) ? $params['status'] : "active",
+            "status" => !empty($params['status']) ? $params['status'] : "pending",
             "end_date" => date("Y-m-d", strtotime($params['end_date'])),
             "end_time" => date("H:i:s", strtotime($params['end_time'])),
             "end_date_time" => date("Y-m-d", strtotime($params['end_date']))." ".date("H:i:s", strtotime($params['end_time'])),
             "purchase_valid" => !empty($params['purchase']) ? $params['purchase'] : NULL,
+            "category" => !empty($params['category']) ? $params['category'] : NULL,
             "appointment" => !empty($params['appointment']) ? $params['appointment'] : NULL,
             "per_person_purchase" => !empty($params['purchase_limit']) ? $params['purchase_limit'] : NULL,
             "return_policy" => !empty($params['return_policy']) ? $params['return_policy'] : NULL,
@@ -188,15 +215,17 @@ class ProductsModel extends AppModel {
                         'image' => $extImage
                             ], $product_id);
                 }
+                $oProductImagesModel = new \models\ProductImagesModel();
+                $oProductImagesModel->update(["fields" => "status = ? ", "whereClause" => "product_id = ? AND status = ? ", "whereParams" => ["sis", "deleted", $product_id,  "active"]]);
                 //print_r($_FILES['prod_image']); exit;
                 if(COUNT($_FILES['prod_image']) > 0) {
                     $oProductImagesModel = new \models\ProductImagesModel();
-                    $extQry = "";
+                    /*$extQry = "";
                     $preImages = implode(",", $params['pre_images']);
                     if(!empty($preImages)) {
                         $extQry = " AND auto_id NOT IN ($preImages) ";
                     }
-                    $oProductImagesModel->update(["fields" => "status = ? ", "whereClause" => "product_id = ? AND status = ? $extQry ", "whereParams" => ["sis", "deleted", $product_id,  "active"]]);
+                    $oProductImagesModel->update(["fields" => "status = ? ", "whereClause" => "product_id = ? AND status = ? $extQry ", "whereParams" => ["sis", "deleted", $product_id,  "active"]]);*/
                     for($i = 0; $i < COUNT($_FILES['prod_image']); $i++) {
                         if (!empty($_FILES['prod_image']['name'][$i])) {
                             $allowed = array('jpg', 'jpeg', 'gif', 'png', 'svg');
@@ -228,6 +257,17 @@ class ProductsModel extends AppModel {
                         }
                     }
                 }
+                if(!empty($params['new_images']) && COUNT($params['new_images']) > 0) {
+                    for($i = 0; $i < COUNT($params['new_images']); $i++) {
+                        $fullPath = $params['new_images'][$i];
+                        $oProductImagesModel->insert([
+                            "product_id" => $product_id,
+                            "image" => $fullPath,
+                            "added_on" => date("Y-m-d H:i:s"),
+                            "added_by" => $product_id,
+                        ]);
+                    }
+                }
             }
         }
         $retData["code"] = "11";
@@ -238,7 +278,7 @@ class ProductsModel extends AppModel {
     }
 
     public function getProductDetails($product_id) {
-        $prod_data = $this->findByPK($product_id, "product_id, store_id, product_name, description, price, discount, owner_share, image, added_on, status, store_id, end_date_time, end_date, end_time, purchase_valid, appointment, per_person_purchase, return_policy ");
+        $prod_data = $this->findByPK($product_id, "product_id, category, store_id, product_name, description, price, discount, owner_share, image, added_on, status, store_id, end_date_time, end_date, end_time, purchase_valid, appointment, per_person_purchase, return_policy ");
         $oProductVariationsModel = new \models\ProductVariationsModel();
         $variations = $oProductVariationsModel->findAll([
             "fields" => "auto_id, name, image, price, discount, added_on, tags",
@@ -249,10 +289,13 @@ class ProductsModel extends AppModel {
         $prod_data['discount'] = $variations[0]['discount'] > 0 ? $variations[0]['discount'] : 0;
         $oProductImagesModel = new \models\ProductImagesModel();
         $prod_data["images"] = $oProductImagesModel->findAll(["fields" => "auto_id, image ", "whereClause" => "product_id = ? AND status = ? ", "whereParams" => ["is", $product_id,  "active"]]);
-        /*$prod_data["images_old"] = "";
+        $prod_data["images_old"] = "";
         for($im = 0; $im < COUNT($prod_data["images"]); $im++) {
-            $prod_data["images_old"] .= $prod_data["images"][$im]['auto_id'].",";
-        }*/
+            $prod_data["images"][$im]['image_full'] = $prod_data["images"][$im]['image'];
+            if(stristr($prod_data["images"][$im]['image'], "images.pexels") === false && stristr($prod_data["images"][$im]['image'], "images.unsplash") === false) {
+                $prod_data["images"][$im]['image_full'] = SITE_URL . $prod_data["images"][$im]['image'];
+            }
+        }
         $prod_data["images_old"] = rtrim($prod_data["images_old"], ",");
         $prod_data["variations"] = count($variations);
         $prod_data["varData"] = $variations;
@@ -270,6 +313,9 @@ class ProductsModel extends AppModel {
         $searchArr = ["fields" => "product_id", "whereClause" => " status = ? AND end_date_time > ?", "whereParams" => ["ss", "active", date("Y-m-d H:i:s")]];
         if (!empty($params['keywords'])) {
             $searchArr["whereClause"] .= " AND (product_name LIKE '%" . $params['keywords'] . "%' OR description LIKE '%" . $params['keywords'] . "%' OR tags LIKE '%" . $params['keywords'] . "%') ";
+        }
+        if (!empty($params['category_id'])) {
+            $searchArr["whereClause"] .= " AND category = '" . $params['category_id'] . "' ";
         }
         $searchArr["whereClause"] .= " ORDER BY end_date_time ASC ";
         $prodCount = $this->count($searchArr);
@@ -299,6 +345,7 @@ class ProductsModel extends AppModel {
             $oAppConfigModel = new \models\AppConfigModel();
             $retData["data"]['coupen_code'] = $oAppConfigModel->find(["fields" => "field_value", "whereClause" => "field_name = ? AND status = ? ", "whereParams" => ["ss", "coupen_code", "active"]])['field_value'];
             $retData["data"]['coupen_amount'] = $oAppConfigModel->find(["fields" => "field_value", "whereClause" => "field_name = ? AND status = ? ", "whereParams" => ["ss", "coupen_amount", "active"]])['field_value'];
+            $retData["data"]['dibbs_credits'] = 0;
             if(!empty($this->getAzharConfigsByKey("USER_ID"))) {
                 $oCustomersModel = new \models\CustomersModel();
                 $custInfo = $oCustomersModel->findByPK($this->getAzharConfigsByKey("USER_ID"), "credits, email");

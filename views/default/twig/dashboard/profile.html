@@ -51,6 +51,9 @@
                                     <h4 class="mb-3">Store Information</h4>
                                     <div class="mb-3">
                                         <label for="store_name">Store Name<span class="text-danger">*</span></label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="top" title="Add your store name in the field below. This will be displayed on any deal that you create.">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="store_name" id="store_name" placeholder="Store Name" value="{{profile.store.store_name}}" required>
                                         </div>
@@ -69,6 +72,9 @@
                                     </div>-->
                                     <div class="mb-3">
                                         <label for="redeem_code">Store Redeem Code<span class="text-danger">*</span></label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="bottom" title="Enter a 4-6 digit code that you want to  use to redeem a customers deal when they show up to claim it. When this code is entered In your customers phone it will mark the deal as redeemed so it can't be claimed twice.">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="redeem_code" id="redeem_code" placeholder="redeem_code" value="{{profile.store.redeem_code}}" required minlength="4" maxlength="6">
                                         </div>
@@ -76,12 +82,18 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="phone">Phone #</label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="top" title="Add your business phone number which will be displayed on any deal you create and give customers an easy way to contact you.">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone #" value="{{profile.store.phone}}" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="website">Website</label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="top" title="If you have a website add it below. This will be displayed on any deal that you create and is a great way for customers to know more about your business.">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="website" id="website" placeholder="Website" value="{{profile.store.website}}" >
                                         </div>
@@ -94,7 +106,10 @@
                                         </div>
                                     </div>-->
                                     <div class="mb-3">
-                                        <label for="location">Location (Lat Long) <span class="text-danger">*</span></label>
+                                        <label for="location">Business Address <span class="text-danger">*</span></label>
+                                        <p style="display: inline; color: grey;" data-toggle="tooltip" data-placement="top" title="List your business address. This will enable your customers to get directions to your location directly from the app">
+                                            <img style="width: 20px;" src="{{constant('ASSETS_URL')}}images/ping.png" />
+                                        </p>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="user_address" id="user_address" placeholder="Your Address" value="{{profile.store.address}}">
                                             <input type="hidden" class="form-control" name="latlng" id="latlng" placeholder="Location" value="{{profile.store.location}}">
@@ -263,11 +278,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h4 class="mb-3">Security Information</h4>
+                                    <h4 class="mb-3">Want To Update Your Password? Do So Below</h4>
                                     <div class="mb-3">
                                         <label for="password">New Password</label>
                                         <div class="input-group">
-                                            <input type="password" class="form-control" name="password" id="password" placeholder="Change Password" value="">
+                                            <input type="password" class="form-control" name="password" id="password" placeholder="New Password" value="">
                                         </div>
                                     </div>
                                 </div>

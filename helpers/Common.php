@@ -187,7 +187,7 @@ class Common extends AppHelper {
         $ip = getenv("REMOTE_ADDR");
         $ip = substr($ip, 0, 8);
         $ip = preg_replace("/\./", "", $ip);
-        // srand($ip);
+        //srand($ip);
         $ghij = rand(1000, 9999);
 
         $pid = getmypid();

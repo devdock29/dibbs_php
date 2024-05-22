@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace controllers;
@@ -76,10 +76,10 @@ class ProductsController extends StateController {
             } else {
                 $data['error'] = $res['message'];
             }
-        }
-
-        if (!empty($get['id'])) {
-            $data['product'] = $oProductsModel->getProductDetails($get['id']);
+        } else {
+            if (!empty($get['id'])) {
+                $data['product'] = $oProductsModel->getProductDetails($get['id']);
+            }
         }
         $data['can_add_product'] = "Y";
         $store_id = $this->getAzharConfigsByKey("STORE_ID");
@@ -101,6 +101,8 @@ class ProductsController extends StateController {
             $data['product']['owner_share'] = $oAppConfigModel->find(["fields" => "field_value", "whereClause" => "field_name = ? AND status = ? ", "whereParams" => ["ss", "product_admin_share", "active"]])['field_value'];
             $data['product']['owner_share'] = $data['product']['owner_share'] > 0 ? $data['product']['owner_share'] : 3;
         }
+        $oCategoriesModel = new \models\CategoriesModel();
+        $data['categories'] = $oCategoriesModel->getAllCat();
         
         $metaData['title'] = 'Add / Update Products -' . DOMAIN_BRAND_NAME;
         $this->meta()->set($metaData);

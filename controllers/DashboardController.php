@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace controllers;
@@ -22,12 +22,14 @@ class DashboardController extends StateController {
         
         $oOrdersModel = new \models\OrdersModel();
         $orders = $oOrdersModel->findAll(["fields" => "payment_status, COUNT(order_id) as tot", "whereClause" => " store_id = ? AND status <> ? GROUP BY payment_status ", "whereParams" => ["is", $store_id, "deleted"]]);
-        for($o = 0; $o < COUNT($orders); $o++) {
-            if($orders[$o]['payment_status'] == 'paid') {
-                $data['paidOrders'] = $orders[$o]['tot'];
-            }
-            if($orders[$o]['payment_status'] == 'pending') {
-                $data['pendingOrders'] = $orders[$o]['tot'];
+        if(!empty($orders)) {
+            for($o = 0; $o < COUNT($orders); $o++) {
+                if($orders[$o]['payment_status'] == 'paid') {
+                    $data['paidOrders'] = $orders[$o]['tot'];
+                }
+                if($orders[$o]['payment_status'] == 'pending') {
+                    $data['pendingOrders'] = $orders[$o]['tot'];
+                }
             }
         }
         
@@ -45,6 +47,56 @@ class DashboardController extends StateController {
         $oStoreTimingsModel = new \models\StoreTimingsModel();
         if($this->isPOST()) {
             $post = $this->obtainPost();
+            $data['profile']['user_name'] = $post['user_name'];
+            $data['profile']['email'] = $post['email'];
+            $data['profile']['store']['store_name'] = $post['store_name'];
+            $data['profile']['store']['redeem_code'] = $post['redeem_code'];
+            $data['profile']['store']['phone'] = $post['phone'];
+            $data['profile']['store']['website'] = $post['website'];
+            $data['profile']['store']['location'] = $post['location'];
+            $data['profile']['store_timings'] = [
+                "sat_close" => $post['sat_close']??"N",
+                "sat_start" => $post['sat_start'] ? date("H:i:s", strtotime($post['sat_start'])) : "",
+                "sat_end" => $post['sat_end'] ? date("H:i:s", strtotime($post['sat_end'])) : "",
+                "sun_close" => $post['sun_close']??"N",
+                "sun_start" => $post['sun_start'] ? date("H:i:s", strtotime($post['sun_start'])) : "",
+                "sun_end" => $post['sun_end'] ? date("H:i:s", strtotime($post['sun_end'])) : "",
+                "mon_close" => $post['mon_close']??"N",
+                "mon_start" => $post['mon_start'] ? date("H:i:s", strtotime($post['mon_start'])) : "",
+                "mon_end" => $post['mon_end'] ? date("H:i:s", strtotime($post['mon_end'])) : "",
+                "tue_close" => $post['tue_close']??"N",
+                "tue_start" => $post['tue_start'] ? date("H:i:s", strtotime($post['tue_start'])) : "",
+                "tue_end" => $post['tue_end'] ? date("H:i:s", strtotime($post['tue_end'])) : "",
+                "wed_close" => $post['wed_close']??"N",
+                "wed_start" => $post['wed_start'] ? date("H:i:s", strtotime($post['wed_start'])) : "",
+                "wed_end" => $post['wed_end'] ? date("H:i:s", strtotime($post['wed_end'])) : "",
+                "thur_close" => $post['thur_close']??"N",
+                "thur_start" => $post['thur_start'] ? date("H:i:s", strtotime($post['thur_start'])) : "",
+                "thur_end" => $post['thur_end'] ? date("H:i:s", strtotime($post['thur_end'])) : "",
+                "fri_close" => $post['fri_close']??"N",
+                "fri_start" => $post['fri_start'] ? date("H:i:s", strtotime($post['fri_start'])) : "",
+                "fri_end" => $post['fri_end'] ? date("H:i:s", strtotime($post['fri_end'])) : "",
+            ];
+            if(empty($post['phone'])) {
+                $data['error'] = "Phone no is mandatory";
+                $this->redirect(['url' => SITE_URL."dashboard/profile", 'data' => $data]);
+            }
+            if(empty($post['latlng'])) {
+                $data['error'] = "Please select valid addesss";
+                $this->redirect(['url' => SITE_URL."dashboard/profile", 'data' => $data]);
+            }
+            $days = ["sat", "sun", "mon"];
+            $hasDayError = "N";
+            for($d = 0; $d < COUNT($days); $d++) {
+                if(empty($post[$days[$d] . "_close"]) && empty($post[$days[$d] . "_start"]) && empty($post[$days[$d] . "_end"])) {
+                    $hasDayError = "Y";
+                    break;
+                }
+            }
+            if($hasDayError == "Y") {
+                $data['error'] = "Please add proper Business timings";
+                $this->redirect(['url' => SITE_URL."dashboard/profile", 'data' => $data]);
+            }
             $upProfile = [
                 "user_name" => $post['user_name'],
             ];
@@ -89,7 +141,7 @@ class DashboardController extends StateController {
                 "location" => $post['latlng'],
                 "redeem_code" => $post['redeem_code'],
                 "coupen_code" => $post['coupen_code'],
-                "coupen_amount" => $post['coupen_amount'],
+                "coupen_amount" => $post['coupen_amount'] ?: 0.00,
                 "address" => $post['user_address'],
                 "start_time" => date("H:i:s", strtotime($post['start_time'])),
                 "end_time" => date("H:i:s", strtotime($post['end_time'])),
@@ -144,10 +196,11 @@ class DashboardController extends StateController {
             $oStoreTimingsModel->insert($upStoreTimings, $post['time_id']);
             $data['success'] = "Profile Successfully Updated";
             $this->redirect(['url' => SITE_URL."dashboard", 'data' => $data]);
+        } else {
+            $data['profile'] = $oUsersModel->find(["fields" => "*", "whereClause" => " user_id = ? ", "whereParams" => ["i", $data['userState']['user_id']]]);
+            $data['profile']['store'] = $oStoresModel->findByPK($data['profile']['store_id']);
+            $data['profile']['store_timings'] = $oStoreTimingsModel->findByFieldInt("store_id", $data['profile']['store_id']);
         }
-        $data['profile'] = $oUsersModel->find(["fields" => "*", "whereClause" => " user_id = ? ", "whereParams" => ["i", $data['userState']['user_id']]]);
-        $data['profile']['store'] = $oStoresModel->findByPK($data['profile']['store_id']);
-        $data['profile']['store_timings'] = $oStoreTimingsModel->findByFieldInt("store_id", $data['profile']['store_id']);
         if(empty($data['profile']['store_timings'])) {
             $oStoreTimingsModel->insert([
                 "store_id" => $data['profile']['store_id'],

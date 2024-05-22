@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace models;
@@ -75,13 +75,13 @@ class UsersModel extends AppModel {
             $retData["error"] = "Please enter email";
             return $retData;
         }
-        if(empty($params['password'])) {
+        /*if(empty($params['password'])) {
             $retData["error"] = "Please enter password";
             return $retData;
-        }
+        }*/
         $isAdmin = $params["admin"] == "Y" ? "Y" : "N";
-        $searchArr = ["fields" => "*", "whereClause" => "email = ? AND pwd = ? AND status = ?", "whereParams" => ["sss", $params['email'], md5($params['password']), "active"]];
-        // $searchArr = ["fields" => "*", "whereClause" => "email = ? AND status = ?", "whereParams" => ["ss", $params['email'], "active"]];
+        //$searchArr = ["fields" => "*", "whereClause" => "email = ? AND pwd = ? AND status = ?", "whereParams" => ["sss", $params['email'], md5($params['password']), "active"]];
+        $searchArr = ["fields" => "*", "whereClause" => "email = ? AND status = ?", "whereParams" => ["ss", $params['email'], "active"]];
         if($isAdmin == "Y") {
             $searchArr["whereClause"] .= " AND user_role = ? ";
             $searchArr["whereParams"][0] .= "s";

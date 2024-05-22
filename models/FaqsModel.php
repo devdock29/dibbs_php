@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace models;
@@ -27,7 +27,7 @@ class FaqsModel extends AppModel {
         }
         $totalRecords = $this->count(array("fields" => " COUNT(" . $this->pk . ")", "whereClause" => $searchArr["whereClause"], "whereParams" => $searchArr["whereParams"]));
 
-        $searchArr["whereClause"] .= " ORDER BY added_on DESC LIMIT ?, ? ";
+        $searchArr["whereClause"] .= " ORDER BY question ASC LIMIT ?, ? ";
         $searchArr["whereParams"][0] .= 'ii';
         $searchArr["whereParams"][] = $arr['offset'];
         $searchArr["whereParams"][] = $arr['perpage'];
@@ -62,7 +62,7 @@ class FaqsModel extends AppModel {
         if (!empty($params['search'])) {
             $searchArr["whereClause"] .= " AND question LIKE '%".$params['search']."%' ";
         }
-        $searchArr["whereClause"] .= " ORDER BY auto_id DESC ";
+        $searchArr["whereClause"] .= " ORDER BY question ASC ";
         $prodCount = $this->count($searchArr);
         $searchArr["whereClause"] .= " LIMIT ?, ? ";
         $searchArr["whereParams"][0] .= "ii";

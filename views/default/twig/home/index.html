@@ -1,6 +1,5 @@
 {% extends '/layout/login.html' %}
 {% block main %}
-
 <div class="authincation h-100">
     <div class="container h-100">
         <div class="row justify-content-center h-100 align-items-center">
@@ -55,11 +54,7 @@
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <button type="submit" class="btn bg-white text-primary btn-block">Sign Me In FF</button>
-                                        <?php
-                                        require_once('../../../../controllers/helperActivity/trackEvent.php');
-                                        ?>
-                                        <!-- <button type="button" class="btn bg-white text-primary btn-block" onclick="trackEvent('signup', 'submit', 'email', 1)">Analytics Test</button> -->
+                                        <button type="submit" class="btn bg-white text-primary btn-block">Sign Me In</button>
                                     </div>
                                 </form>
                                 <div class="new-account mt-3">
@@ -75,18 +70,12 @@
 </div>
 <script>
     function tooglePassword(id) {
-       var x = document.getElementById(id);
-       if (x.type === "password") {
-           x.type = "text";
-       } else {
-           x.type = "password";
-       }
-   }
-
-   function onAnalyticsBtnCLick(id) {
-       alert("Form Analytics successfully!");
-
-   }
+        var x = document.getElementById(id);
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
 </script>
-
 {% endblock %}

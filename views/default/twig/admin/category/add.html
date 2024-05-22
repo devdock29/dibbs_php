@@ -1,0 +1,69 @@
+{% extends '/admin/layout/main.html' %}
+{% block main %}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <h4>Categories</h4>
+            <!--<ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Shop </a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Checkout</a></li>
+            </ol>-->
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 order-lg-1"></div>
+                            <div class="col-lg-6 order-lg-1">
+                                <h4 class="mb-3">Add / Update Category</h4>
+                                <form method="post" action="" class="needs-validation" enctype="multipart/form-data" >
+                                    <input type="hidden" name="auto_id" value="{{caption.auto_id}}" />
+                                    <div class="mb-3">
+                                        <label for="caption">Category Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="caption" id="caption" placeholder="Category Name" required="" value="{{caption.name}}">
+                                            <div class="invalid-feedback d-none">
+                                                Name is required.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description">Category Description </label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" rows="5" name="description" id="description" placeholder="Description Here..">{{caption.description}}</textarea>
+                                        </div>
+                                    </div>
+                                    {% if caption.image != '' %}
+                                    <div class="mb-3">
+                                        <label for="description">Category Image</label>
+                                        <div class="input-group">
+                                            <img src="{{constant('SITE_URL')}}{{caption.image}}" height="100" width="100">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <div class="mb-3">
+                                        <label>Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" name="image" onchange="document.getElementById('pre_image_new').src = window.URL.createObjectURL(this.files[0]); document.getElementById('pre_img_div_new').style.display = 'block';"  accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="pre_img_div_new" style="display: none; ">
+                                            <div class="input-group">
+                                                <img src="#" height="100" width="100" id="pre_image_new">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="mb-4">
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Add/Update Category</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

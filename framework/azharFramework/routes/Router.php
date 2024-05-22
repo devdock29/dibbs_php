@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace azharFramework\routes;
@@ -172,6 +172,7 @@ class Router {
         }
     }
 
+
     private static function build($uri, $baseURL) {
         $urlParts = array("home", "index");
         if ($uri != '') {
@@ -181,20 +182,26 @@ class Router {
             if (!$rotueData) {
                 $rotueData = static::find($urlParts[0]);
             }
-            // if ($rotueData) {
-            //     $_data = explode("@", $rotueData);
-            //     static::setRouteData($_data);
-            //     //setting action name at 0th place
-            //     $urlParts[0] = $_data[1];
-            //     //now prepend controller name at start of array
-            //     array_unshift($urlParts, $_data[0]);
-            //     Info::set("controller", $_data[0]);
-            //     Info::set("action", $_data[1]);
-            //     Info::set("requestMethod", $_data[2]);
-            // } else {
-            //     Info::set("controller", ucfirst((isset($urlParts[0]) ? $urlParts[0] : null)));
-            //     Info::set("action", (isset($urlParts[1]) ? $urlParts[1] : null));
-            // }
+            if ($rotueData) {
+                if (is_array($rotueData)) {
+                    // Handle the scenario when route data is an array
+                    // You might need to handle this case according to your application logic
+                   
+                } else {
+                    $_data = explode("@", $rotueData);
+                    static::setRouteData($_data);
+                    //setting action name at 0th place
+                    $urlParts[0] = $_data[1];
+                    //now prepend controller name at start of array
+                    array_unshift($urlParts, $_data[0]);
+                    Info::set("controller", $_data[0]);
+                    Info::set("action", $_data[1]);
+                    Info::set("requestMethod", $_data[2]);
+                }
+            } else {
+                Info::set("controller", ucfirst((isset($urlParts[0]) ? $urlParts[0] : null)));
+                Info::set("action", (isset($urlParts[1]) ? $urlParts[1] : null));
+            }
         } else {
             Info::set("controller", "Home");
             Info::set("action", "index");

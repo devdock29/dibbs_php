@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace models;
@@ -19,8 +19,8 @@ class OrdersModel extends AppModel {
         $searchFilters = $this->getState('orderSearch');
         $searchArr = [
             "fields" => "*",
-            "whereClause" => " 1 ",
-            "whereParams" => []
+            "whereClause" => " payment_status = ? ",
+            "whereParams" => ["s", "paid"]
         ];
         if (!empty($arr['store_id'])) {
             $searchArr["whereClause"] .= " AND store_id = ? ";
@@ -48,19 +48,21 @@ class OrdersModel extends AppModel {
         $oOrderItemsModel = new \models\OrderItemsModel();
         $oStoresModel = new \models\StoresModel();
         $oCustomersModel = new \models\CustomersModel();
-        for ($d = 0; $d < COUNT($orderData); $d++) {
-            $orderItems = $oOrderItemsModel->findAll(["fields" => "product_id, variation_id, quantity, unit_price, total_price", "whereClause" => "order_id = ? AND status = ? ", "whereParams" => ["is", $orderData[$d]['order_id'], "active"]]);
-            $oProductsModel = new \models\ProductsModel();
-            $totorderItems = COUNT($orderItems);
-            for ($i = 0; $i < $totorderItems; $i++) {
-                $orderItems[$i]['prodData'] = $oProductsModel->getProductDetails($orderItems[$i]['product_id']);
+        if(!empty($orderData)) {
+            for ($d = 0; $d < COUNT($orderData); $d++) {
+                $orderItems = $oOrderItemsModel->findAll(["fields" => "product_id, variation_id, quantity, unit_price, total_price", "whereClause" => "order_id = ? AND status = ? ", "whereParams" => ["is", $orderData[$d]['order_id'], "active"]]);
+                $oProductsModel = new \models\ProductsModel();
+                $totorderItems = COUNT($orderItems);
+                for ($i = 0; $i < $totorderItems; $i++) {
+                    $orderItems[$i]['prodData'] = $oProductsModel->getProductDetails($orderItems[$i]['product_id']);
+                }
+                $orderData[$d]['items'] = $orderItems;
+                $orderData[$d]['tot_items'] = $totorderItems;
+                $storeInfo = $oStoresModel->getStoreProfile($orderData[$d]['store_id']);
+                $orderData[$d]['store_info'] = $storeInfo;
+                $custInfo = $oCustomersModel->findByPK($orderData[$d]['customer_id']);
+                $orderData[$d]['cust_info'] = $custInfo;
             }
-            $orderData[$d]['items'] = $orderItems;
-            $orderData[$d]['tot_items'] = $totorderItems;
-            $storeInfo = $oStoresModel->getStoreProfile($orderData[$d]['store_id']);
-            $orderData[$d]['store_info'] = $storeInfo;
-            $custInfo = $oCustomersModel->findByPK($orderData[$d]['customer_id']);
-            $orderData[$d]['cust_info'] = $custInfo;
         }
 
         return ['orders' => $orderData, 'totalRecords' => $totalRecords];
@@ -220,6 +222,9 @@ class OrdersModel extends AppModel {
                                 "added_on" => date("Y-m-d H:i:s"),
                                 "added_by" => $params['customer_id'],
                             ]);
+                            $insertArr['payment_status'] = "paid";
+                            $insertArr['payment_updated_on'] = date("Y-m-d H:i:s");
+                            $this->insert($insertArr, $order_id);
                         } 
                     } 
                     if(!empty($params['stripe_token'])) {
@@ -229,6 +234,11 @@ class OrdersModel extends AppModel {
                             $confirmationId = $checkPayment['id'];
                             $confirmPayment = \helpers\Common::confirmPayment(['order_id' => $order_id, 'payment_method' => $params['stripe_token'], 'payment_id' => $confirmationId]);
                             if(!empty($confirmPayment['status']) && $confirmPayment['status'] == 'succeeded') {
+                                $insertArr['payment_confirmation_id'] = $confirmPayment['id'];
+                                $insertArr['payment_received'] = ($confirmPayment['amount_received'] / 100);
+                                $insertArr['payment_status'] = "paid";
+                                $insertArr['payment_updated_on'] = date("Y-m-d H:i:s");
+                                $this->insert($insertArr, $order_id);
                                 $oOrderPaymentsModel->insert([
                                     "order_id" => $order_id,
                                     "method" => "DibbsCredits",
@@ -345,6 +355,9 @@ class OrdersModel extends AppModel {
                 $retData["status"] = "Y";
                 $retData["message"] = $oLangsModel->findByPK("54", "lang_en")["lang_en"];
                 return $retData;
+            } else {
+                $retData["message"] = $confirmPayment['error']->message;
+                return $retData;
             }
         }
         $retData["message"] = $oLangsModel->findByPK("53", "lang_en")["lang_en"];
@@ -356,7 +369,7 @@ class OrdersModel extends AppModel {
         $oLangsModel = new \models\LangsModel();
         $offset = (!empty($params['start']) ? $params['start'] : 0);
         $rows = (!empty($params['rows']) ? $params['rows'] : 20);
-        $searchArr = ["fields" => "order_id", "whereClause" => " 1 ", "whereParams" => [""]];
+        $searchArr = ["fields" => "order_id", "whereClause" => " payment_status = ? ", "whereParams" => ["s", "paid"]];
         if (!empty($params['customer_id'])) {
             $searchArr["whereClause"] .= " AND customer_id = ? ";
             $searchArr["whereParams"][0] .= "i";
@@ -408,6 +421,10 @@ class OrdersModel extends AppModel {
         if (!empty($orderData)) {
             if ($orderData['is_redeemed'] == 'Y') {
                 $retData["message"] = $oLangsModel->findByPK("37", "lang_en")["lang_en"];
+                return $retData;
+            }
+            if ($orderData['payment_status'] == 'pending') {
+                $retData["message"] = $oLangsModel->findByPK("57", "lang_en")["lang_en"];
                 return $retData;
             }
             $oStoresModel = new \models\StoresModel();

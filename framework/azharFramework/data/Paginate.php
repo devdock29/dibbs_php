@@ -2,10 +2,10 @@
 
 // +------------------------------------------------------------------------+
 // | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funbook-pk.com/azhar
+// | @author_url: http://www.funsocio.com/azhar
 // | @author_email: azharwaris@gmail.com
 // +------------------------------------------------------------------------+
-// | Copyright (c) 2017 FUNBOOK. All rights reserved.
+// | Copyright (c) 2023 FUNSOCIO All rights reserved.
 // +------------------------------------------------------------------------+
 
 namespace azharFramework\data;
@@ -20,7 +20,7 @@ class Paginate {
 
     public function __construct($params) {
         $this->url = $params['url'];
-        $this->baseUrl = $params['baseURL'];
+        $this->baseUrl = $params['url'];//$params['baseURL'];
         $this->urlParams = $params['getParams'];
         $this->defaultLanguage = (isset($params['language'])) ? $params['language'] : 'en';
         $this->messages = (isset($params['messages'])) ? $params['messages'] : array('showing' => 'Showing', 'of' => 'of', 'previous' => 'Previous', 'next' => 'Next');
@@ -70,7 +70,7 @@ class Paginate {
             if ($isReWrite == 'N') {
                 $str .= "<a href='" . $this->fpn($next) . "' rel='previous' title='" . $previous . "' class='paginate_button previous' data-dt-idx='0' tabindex='0'> " . $previous . "</a>";
             } else {
-                 $str .= "<a href='" . $this->url.'/'.$next . "' rel='previous' title='" . $previous . "' class='paginate_button previous' data-dt-idx='0' tabindex='0'> " . $previous . "</a>";
+                 $str .= "<a href='" . $this->url.'/fpn/'.$next . "' rel='previous' title='" . $previous . "' class='paginate_button previous' data-dt-idx='0' tabindex='0'> " . $previous . "</a>";
             }
         }
 
@@ -99,7 +99,7 @@ class Paginate {
                     if ($isReWrite == 'N') {
                         $str .= '<span><a href="' . $this->fpn($nextOffset) . '" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">' . $this->convertNumeralsToArabic($number) . '</a></span>';
                     } else {
-                        $str .= '<span><a href="'.$this->url.'/'.$nextOffset.'" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">' . $this->convertNumeralsToArabic($number) . '</a></span>';
+                        $str .= '<span><a href="'.$this->url.'/fpn/'.$nextOffset.'" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">' . $this->convertNumeralsToArabic($number) . '</a></span>';
                     }
                 }
                 $lastNumber = $number;
@@ -114,7 +114,7 @@ class Paginate {
                 $nextOffset = $pfn_val + $perPage;
                 $str .= '<a href="' . $this->url.'/'.$this->fpn($nextOffset) . '" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">Next</a>';
             } else {
-                $str .= '<a href="'.$this->url.'/'.$next.'" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">Next</a>';
+                $str .= '<a href="'.$this->url.'/fpn/'.$next.'" class="paginate_button" aria-controls="example5" data-dt-idx="1" tabindex="0">Next</a>';
             }
         }
 

@@ -3,15 +3,15 @@
 <div class="content-body">
     <div class="container-fluid">
         <div class="d-sm-flex d-block justify-content-between align-items-center mb-4">
-            <h2 class="text-black font-w600 mb-sm-0 mb-2">Products</h2>
+            <h2 class="text-black font-w600 mb-sm-0 mb-2">Deals</h2>
         </div>
         <div class="row">
             <div class="col-xl-12">
                 {% include '/layout/success-error.html' %}
                 <div class="d-sm-flex  d-block align-items-center mb-4">
                     <div class="mr-auto">
-                        <h4 class="fs-20 text-black">Products <small>({{totalRecords|number_format}})</small></h4>
-                        <span class="fs-12">All of Your Products List</span>
+                        <h4 class="fs-20 text-black">All Deals <small>({{totalRecords|number_format}})</small></h4>
+                        <span class="fs-12">All of Your Deals List</span>
                     </div>
                     <form action="" method="post">
                         <div class="dropdown custom-dropdown mb-0 mt-3 mt-sm-0">
@@ -33,12 +33,12 @@
                     <div class="card-body payment-bx tab-content p-0">
                         <div class="tab-pane active show fade" id="monthly" role="tabpanel">
                             <div id="accordion-one" class="accordion accordion-primary">
-                            <table class="table display mb-4 dataTablesCard" id="example5">
+                            <table class="table display mb-4 dataTablesCard" id="example5" style="display: block; overflow-x: auto;">
                                 <thead class="accordion__item">
                                     <tr class="accordion__header collapsed rounded" data-toggle="collapse" data-target="#default_collapse0">
-                                    <th>Product ID</th>
-                                    <th>Image</th>
-                                    <th>Product Info</th>
+                                    <th>Deal ID</th>
+                                    <th class="hidden-xs hidden-sm">Image</th>
+                                    <th>Deal Info</th>
                                     <th>Description</th>
                                     <th>Added On</th>
                                     <th>Product Status</th>
@@ -49,10 +49,10 @@
                                 {% for product in products %}
                                 <tr class="accordion__header collapsed rounded" data-toggle="collapse" data-target="#default_collapse{{loop.index}}">
                                     <td><span class="text-black font-w500">#&nbsp;{{product.product_id}}</span></td>
-                                    <td>
+                                    <td class="hidden-xs hidden-sm">
                                         <div class="profile-image mr-4">
-                                            {% if product.image != '' %}
-                                            <img src="{{constant('SITE_URL')}}{{product.image}}" alt="{{product.product_name}}" class="rounded-circle" width="63" height="63">
+                                            {% if product.image_full != '' %}
+                                            <img src="{{product.image_full}}" alt="{{product.product_name}}" class="rounded-circle" width="63" height="63">
                                             {% else %}
                                             <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{product.product_name}}" class="rounded-circle" width="63">
                                             {% endif %}
@@ -61,8 +61,8 @@
                                     <td>
                                         <div>
                                             <h6 class="fs-16 font-w700 mb-0"><a class="text-black" href="javascript:void(0)">{{product.product_name}}</a></h6>
-                                            <span class="fs-14">{{product.variations}} Variations</span>
-                                            <span class="fs-14">From {{product.storeData.store_name}}</span>
+                                            <span class="fs-14 hidden-xs hidden-sm">{{product.variations}} Variations</span>
+                                            <span class="fs-14 hidden-xs hidden-sm">From {{product.storeData.store_name}}</span>
                                         </div>
                                     </td>
                                     <!--<td>
@@ -75,7 +75,7 @@
                                     </td>-->
                                     <td><span class="text-black">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description }}</span></td>
                                     <td><span class="text-black">{{product.added_on|date("d M, Y H:i:s")}}</span></td>
-                                    <td><a href="javascript:void(0)" class="label label-xs {% if product.status == 'pending' %}label-warning {% else %}label-success{% endif %}">{{product.status|capitalize}}</a></td>
+                                    <td><a href="javascript:void(0)" class="label label-xs {% if product.status != 'active' %}label-warning {% else %}label-success{% endif %}">{{product.status|capitalize}}</a></td>
                                     <td>
                                         <div class="dropdown mb-auto">
                                             <div class="btn-link" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -99,7 +99,7 @@
                                             <tr>
                                                 <th>Variant ID</th>
                                                 <th>Name</th>
-                                                <th>Image</th>
+                                                <!--<th>Image</th>-->
                                                 <th>Price</th>
                                                 <th>Discount</th>
                                                 <th>Added On</th>
@@ -110,7 +110,7 @@
                                             <tr>
                                                 <td><span class="text-black">#{{var.auto_id}}</span></td>
                                                 <td><span class="text-black">{{var.name}}</span></td>
-                                                <td>
+                                                <!--<td>
                                                     <span class="text-black">
                                                     {% if var.image != '' %}
                                                     <img src="{{constant('SITE_URL')}}{{var.image}}" alt="{{var.name}}" class="rounded-circle1" width="40" height="40">
@@ -118,7 +118,7 @@
                                                     <img src="{{constant('SITE_URL')}}assets/images/avatar/1.png" alt="{{var.name}}" class="rounded-circle1" width="40">
                                                     {% endif %}
                                                     </span>
-                                                </td>
+                                                </td>-->
                                                 <td><span class="text-black">$&nbsp;{{var.price|number_format(2)}}</span></td>
                                                 <td><span class="text-black">$&nbsp;{{var.discount|number_format(2)}}</span></td>
                                                 <td><span class="text-black">{{var.added_on|date("M d, Y")}}</span></td>
