@@ -1,13 +1,5 @@
 <?php
 
-// +------------------------------------------------------------------------+
-// | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funsocio.com/azhar
-// | @author_email: azharwaris@gmail.com
-// +------------------------------------------------------------------------+
-// | Copyright (c) 2023 FUNSOCIO All rights reserved.
-// +------------------------------------------------------------------------+
-
 namespace models;
 
 class FaqsModel extends AppModel {
@@ -15,7 +7,14 @@ class FaqsModel extends AppModel {
     protected $relation = 'faqs';
     protected $pk = 'auto_id';
     
-    public function getFaqsList($arr = []) {
+    public function getFaqsList($options = []) {
+        $offset = isset($options['offset']) ? $options['offset'] : 0;
+        $perpage = isset($options['perpage']) ? $options['perpage'] : 20;
+    
+        // Assuming 'added_on' is the column where you store the timestamp
+        $orderBy = isset($options['orderBy']) ? $options['orderBy'] : 'added_on';
+        $orderDirection = isset($options['orderDirection']) ? $options['orderDirection'] : 'DESC';
+    
         $searchFilters = $this->getState('faqsSearch');
         $searchArr = [
             "fields" => "*",
@@ -25,16 +24,18 @@ class FaqsModel extends AppModel {
         if (!empty($searchFilters['keyword'])) {
             $searchArr["whereClause"] .= " AND (question LIKE '%" . $searchFilters['keyword'] . "%' OR answer LIKE '%" . $searchFilters['keyword'] . "%') ";
         }
-        $totalRecords = $this->count(array("fields" => " COUNT(" . $this->pk . ")", "whereClause" => $searchArr["whereClause"], "whereParams" => $searchArr["whereParams"]));
-
-        $searchArr["whereClause"] .= " ORDER BY question ASC LIMIT ?, ? ";
+    
+        $searchArr["whereClause"] .= " ORDER BY $orderBy $orderDirection LIMIT ?, ? ";
         $searchArr["whereParams"][0] .= 'ii';
-        $searchArr["whereParams"][] = $arr['offset'];
-        $searchArr["whereParams"][] = $arr['perpage'];
+        $searchArr["whereParams"][] = $offset;
+        $searchArr["whereParams"][] = $perpage;
+    
+        $totalRecords = $this->count(array("fields" => " COUNT(" . $this->pk . ")", "whereClause" => $searchArr["whereClause"], "whereParams" => $searchArr["whereParams"]));
         $langData = $this->findAll($searchArr);
-
+    
         return ['faqs' => $langData, 'totalRecords' => $totalRecords];
     }
+    
     
     public function addFaq($arr) {
         $adminUser = $this->getState("adminUser");

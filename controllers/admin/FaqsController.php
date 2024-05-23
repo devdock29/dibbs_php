@@ -1,13 +1,4 @@
 <?php
-
-// +------------------------------------------------------------------------+
-// | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funsocio.com/azhar
-// | @author_email: azharwaris@gmail.com
-// +------------------------------------------------------------------------+
-// | Copyright (c) 2023 FUNSOCIO All rights reserved.
-// +------------------------------------------------------------------------+
-
 namespace controllers\admin;
 
 class FaqsController extends StateController {
@@ -35,7 +26,14 @@ class FaqsController extends StateController {
         } else {
             $this->setState('faqsSearch', $data['search']);
         }
-        $langList = $oFaqsModel->getFaqsList(['offset' => $offset, 'perpage' => $perpage]);
+        // $langList = $oFaqsModel->getFaqsList(['offset' => $offset, 'perpage' => $perpage]);
+        $langList = $oFaqsModel->getFaqsList([
+            'offset' => $offset,
+            'perpage' => $perpage,
+            'orderBy' => 'added_on', // Assuming you have a 'created_at' field in your FAQ table
+            'orderDirection' => 'DESC' // Displaying the newest first
+        ]);
+        
         $data['faqs'] = $langList['faqs'];
         $data['totalRecords'] = $langList['totalRecords'];
         $paginateSettings = [
