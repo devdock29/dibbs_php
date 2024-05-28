@@ -1,13 +1,5 @@
 <?php
 
-// +------------------------------------------------------------------------+
-// | @author Azhar Waris (AzharJutt)
-// | @author_url: http://www.funsocio.com/azhar
-// | @author_email: azharwaris@gmail.com
-// +------------------------------------------------------------------------+
-// | Copyright (c) 2023 FUNSOCIO All rights reserved.
-// +------------------------------------------------------------------------+
-
 namespace models;
 
 class StoresModel extends AppModel {
@@ -35,13 +27,19 @@ class StoresModel extends AppModel {
         $searchArr["whereParams"][0] .= 'ii';
         $searchArr["whereParams"][] = $arr['offset'];
         $searchArr["whereParams"][] = $arr['perpage'];
+
+        
         $storeData = $this->findAll($searchArr);
 
+      
         $oUsersModel = new \models\UsersModel();
-        for ($d = 0; $d < COUNT($storeData); $d++) {
-            $userId = $storeData[$d]['user_id'];
-            $storeData[$d]['userInfo'] = $oUsersModel->findByPK($userId);
+        if($storeData) {
+            for ($d = 0; $d < COUNT($storeData); $d++) {
+                $userId = $storeData[$d]['user_id'];
+                $storeData[$d]['userInfo'] = $oUsersModel->findByPK($userId);
+            }
         }
+        
 
         return ['stores' => $storeData, 'totalRecords' => $totalRecords];
     }

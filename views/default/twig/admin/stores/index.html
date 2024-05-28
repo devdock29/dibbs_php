@@ -81,7 +81,7 @@
                                             {% else %}
                                             <a class="dropdown-item" href="{{constant('ADMIN_URL')}}stores/index/action/active/id/{{store.store_id}}">Activate</a>
                                             {% endif %}
-                                            <!--<a class="dropdown-item" href="javascript:void(0)">Edit</a>-->
+                                            <a class="dropdown-item" href="javascript:void(0)">Edit</a>
                                         </div>
                                     </div>
                                 </td>
@@ -89,12 +89,16 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <div class="row ml-0 mr-0">
-                        <div class="col-lg-6 text-left">
-                            {{pagenationInfo|raw}}
-                        </div>
-                        <div class="col-lg-6 text-right">
-                            {{pagenation|raw}}
+                    <div class="table-responsive table-hover fs-14">
+                        <div id="example5_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="row ml-0 mr-0">
+                                <div class="col-lg-6 text-left">
+                                    {{pagenationInfo|raw}}
+                                </div>
+                                <div class="col-lg-6 text-right">
+                                    {{pagenation|raw}}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
