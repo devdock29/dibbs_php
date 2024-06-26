@@ -23,6 +23,8 @@ function getServEnv() {
             return "beta";
         } elseif(stristr($_SERVER['SERVER_NAME'], "thedibbsapp") || stristr($_SERVER['REQUEST_URI'], "thedibbsapp")) {
             return "demo";
+        } elseif(stristr($_SERVER['SERVER_NAME'], "thundertechsol") || stristr($_SERVER['REQUEST_URI'], "thundertechsol")) {
+            return "thunder";
         } else {
             return "live";
         }
@@ -35,6 +37,8 @@ function getServEnv() {
             return "beta";
         } elseif(stristr($pwd, "htdocs")) {
             return "demo";
+        } elseif(stristr($pwd, "dibbst")) {
+            return "thunder";
         } else {
             return "live";
         }
