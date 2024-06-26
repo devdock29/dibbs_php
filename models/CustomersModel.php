@@ -38,6 +38,12 @@ class CustomersModel extends AppModel {
             $retData["message"] = $oLangsModel->findByPK("5", "lang_en")["lang_en"];
             return $retData;
         }
+        $gender = isset($params['gender']) ? $params['gender'] : 'unknown';
+
+        if (($params[$gender])) {
+            $retData["error"] = "Please enter gender";
+            return $retData;
+        }
         $refCode = \helpers\Common::genRandomString(8, "MIX");
         while(!empty($this->findByFieldString("refferal_code", $refCode, "customer_id"))) {
             $refCode = \helpers\Common::genRandomString(8, "MIX");
@@ -61,7 +67,8 @@ class CustomersModel extends AppModel {
             //"refferal_credits" => $refferalCreditsDefault ?: 0,
             "credits" => $refferal_credits,
             "added_on" => date("Y-m-d H:i:s"),
-            "ip_address" => \helpers\Common::getIP()
+            "ip_address" => \helpers\Common::getIP(),
+            "gender" => $gender,
         ]);
         $searchArr = ["fields" => "customer_id, first_name, last_name, email, image, phone, address, notification, credits, refferal_code as referral_code", "whereClause" => "email = ? AND status = ?", "whereParams" => ["ss", $params['email'], "active"]];
         $user_info = $this->find($searchArr);
